@@ -170,13 +170,6 @@
     const rawDate = document.getElementById("date").value;
     const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
 
-    /* 계산 (단가 방식) */
-    /*const diff = sell - buy;
-    const profit = diff * qty;
-    const totalBuy = buy * qty;
-    const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
-    const memo = document.getElementById("memo").value; */
-
     /* 단가 방식 계산 */
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
@@ -184,6 +177,13 @@
     const memo = document.getElementById("memo").value;
 
     if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
+
+    /* 계산 (단가 방식) */
+    const diff = sell - buy;
+    const profit = diff * qty;
+    const totalBuy = buy * qty;
+    const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
+    const memo = document.getElementById("memo").value;
 
     posts.unshift({
       ticker,
