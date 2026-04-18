@@ -11,7 +11,6 @@
   to { opacity:1; transform:translateY(0); }
 }
 
-/* 기본 카드 */
 .card {
   position: relative;
   background: #fff;
@@ -23,7 +22,6 @@
   transition: all 0.2s ease;
 }
 
-/* ✔ 수익 카드 glow (토스 스타일) */
 .card-profit {
   box-shadow:
     0 0 0 1px rgba(229,57,53,0.35),
@@ -31,12 +29,10 @@
     0 6px 18px rgba(0,0,0,0.04);
 }
 
-/* hover 효과 */
 .card:hover {
   transform: translateY(-2px);
 }
 
-/* 삭제 버튼 */
 .del-btn {
   position:absolute;
   top:16px;
@@ -57,28 +53,17 @@
 
 <div style="max-width:420px; margin:0 auto; padding:16px;">
 
-  <!-- 제목 -->
   <div style="font-size:30px; font-weight:800; margin-bottom:12px;">대시보드</div>
 
-  <!-- 누적 수익 + 작성 버튼 -->
   <div style="display:flex; gap:8px; margin-bottom:16px;">
 
-    <!-- 누적 수익 -->
-    <div style="
-      flex:1;
-      padding:14px;
-      border-radius:16px;
-      background:#f7f8fa;
-      box-sizing:border-box;
-    ">
+    <div style="flex:1; padding:14px; border-radius:16px; background:#f7f8fa;">
       <div style="font-size:12px; color:#888;">누적 수익</div>
-
       <div id="totalProfitText" style="font-size:18px; font-weight:700; margin-top:6px;">
         $ 0.00
       </div>
     </div>
 
-    <!-- 작성 버튼 -->
     <div onclick="openModal()" style="
       width:90px;
       border-radius:16px;
@@ -95,12 +80,11 @@
 
   </div>
 
-  <!-- 게시물 리스트 -->
   <div id="postList"></div>
 
 </div>
 
-<!-- 입력 모달 -->
+<!-- 모달 -->
 <div id="modal" style="
   position:fixed;
   bottom:0;
@@ -113,42 +97,18 @@
   max-height:80vh;
   overflow:auto;
   box-shadow:0 -4px 20px rgba(0,0,0,0.1);
-  box-sizing:border-box;
 ">
 
-  <input id="ticker" placeholder="티커"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="ticker" placeholder="티커" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="postTitle" placeholder="제목" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="color" value="#000000" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="date" type="date" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="buy" type="number" placeholder="구매 가격" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="sell" type="number" placeholder="판매 가격" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="qty" type="number" placeholder="수량" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="memo" placeholder="메모" style="width:100%; padding:10px; margin-bottom:10px;">
 
-  <input id="postTitle" placeholder="제목"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <input id="color" value="#000000" placeholder="색상"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <input id="date" type="date"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <input id="buy" type="number" placeholder="구매 가격"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <input id="sell" type="number" placeholder="판매 가격"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <input id="qty" type="number" placeholder="수량"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <input id="memo" placeholder="메모"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
-
-  <div onclick="addPost()" style="
-    padding:14px;
-    background:#3182f6;
-    color:#fff;
-    border-radius:14px;
-    text-align:center;
-    font-weight:600;
-    cursor:pointer;
-  ">
+  <div onclick="addPost()" style="padding:14px; background:#3182f6; color:#fff; border-radius:14px; text-align:center; font-weight:600;">
     저장
   </div>
 
@@ -158,29 +118,53 @@
 
 const modal = document.getElementById("modal");
 const postList = document.getElementById("postList");
+const totalEl = document.getElementById("totalProfitText");
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
+/* 모달 */
 function openModal() {
   modal.style.display = "block";
 }
 
+/* 저장 */
 function savePosts() {
   localStorage.setItem("posts", JSON.stringify(posts));
 }
 
+/* 삭제 */
 function deletePost(index) {
   posts.splice(index, 1);
   savePosts();
   renderPosts();
 }
 
+/* ✔ 카운트업 핵심 */
+function animateNumber(from, to, duration = 500) {
+  const start = performance.now();
+
+  function frame(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const value = from + (to - from) * progress;
+
+    totalEl.innerText = `$ ${value.toFixed(2)}`;
+
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
 /* 누적 수익 */
+let lastTotal = 0;
+
 function renderTotalProfit() {
   const total = posts.reduce((sum, p) => sum + (p.profit || 0), 0);
 
-  document.getElementById("totalProfitText").innerText =
-    `$ ${total.toFixed(2)}`;
+  animateNumber(lastTotal, total);
+  lastTotal = total;
 }
 
 /* 리스트 */
@@ -191,16 +175,13 @@ function renderPosts() {
   posts.forEach((p, index) => {
 
     const card = document.createElement("div");
-    card.classList.add("card");
+    card.className = "card";
 
-    /* ✔ 수익이면 glow */
-    if (p.profit > 0) {
-      card.classList.add("card-profit");
-    }
+    if (p.profit > 0) card.classList.add("card-profit");
 
     const del = document.createElement("div");
     del.innerText = "삭제";
-    del.classList.add("del-btn");
+    del.className = "del-btn";
     del.onclick = () => deletePost(index);
 
     const content = document.createElement("div");
@@ -285,9 +266,7 @@ function addPost() {
 
   modal.style.display = "none";
 
-  document.querySelectorAll("input").forEach(i => {
-    i.value = "";
-  });
+  document.querySelectorAll("input").forEach(i => i.value = "");
 }
 
 renderPosts();
