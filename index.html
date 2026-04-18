@@ -9,7 +9,7 @@
   body {
     margin: 0;
     background: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   .container {
@@ -24,15 +24,12 @@
     margin-bottom: 16px;
   }
 
-  /* 기록 버튼 */
   .record-btn {
-    width: 100%;
     padding: 14px;
-    border-radius: 14px;
     background: #2979ff;
-    color: white;
+    color: #fff;
+    border-radius: 14px;
     text-align: center;
-    font-weight: 600;
     margin-bottom: 16px;
     cursor: pointer;
   }
@@ -62,10 +59,6 @@
     margin-right: 12px;
   }
 
-  .title {
-    font-weight: 600;
-  }
-
   .date {
     font-size: 12px;
     color: #999;
@@ -83,7 +76,6 @@
     color: #555;
   }
 
-  /* 모달 */
   .modal {
     position: fixed;
     bottom: 0;
@@ -92,7 +84,6 @@
     background: #fff;
     padding: 20px;
     border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     display: none;
   }
 
@@ -107,7 +98,7 @@
   .submit {
     padding: 12px;
     background: #2979ff;
-    color: #fff;
+    color: white;
     border-radius: 12px;
     text-align: center;
     cursor: pointer;
@@ -126,7 +117,7 @@
   <!-- 기록 버튼 -->
   <div class="record-btn" onclick="openModal()">+ 기록 추가</div>
 
-  <!-- 게시물 리스트 영역 -->
+  <!-- 게시물 리스트 -->
   <div id="postList"></div>
 
 </div>
@@ -134,19 +125,19 @@
 <!-- 입력 모달 -->
 <div class="modal" id="modal">
 
-  <!-- [입력] 티커 -->
+  <!-- 티커 -->
   <input id="ticker" placeholder="티커 (예: QLD)">
 
-  <!-- [입력] 매수 금액 -->
+  <!-- 매수 -->
   <input id="buy" type="number" placeholder="매수 금액">
 
-  <!-- [입력] 매도 금액 -->
+  <!-- 매도 -->
   <input id="sell" type="number" placeholder="매도 금액">
 
-  <!-- [입력] 메모 -->
+  <!-- 메모 -->
   <input id="memo" placeholder="메모">
 
-  <div class="submit" onclick="addPost()">기록 저장</div>
+  <div class="submit" onclick="addPost()">저장</div>
 
 </div>
 
@@ -154,12 +145,47 @@
   const modal = document.getElementById("modal");
   const postList = document.getElementById("postList");
 
+  /* 저장된 데이터 불러오기 */
+  let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
   function openModal() {
     modal.style.display = "block";
   }
 
-  function addPost() {
+  function savePosts() {
+    localStorage.setItem("posts", JSON.stringify(posts));
+  }
 
+  function renderPosts() {
+    postList.innerHTML = "";
+
+    posts.forEach(p => {
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const color = p.profit >= 0 ? "#e53935" : "#2979ff";
+
+      card.innerHTML = `
+        <div class="profile">
+          <div class="avatar" style="background:#2979ff;">${p.ticker}</div>
+          <div>
+            <div><b>${p.ticker} 매매 기록</b></div>
+            <div class="date">${p.date}</div>
+          </div>
+        </div>
+
+        <div class="profit" style="color:${color}">
+          ${p.profit >= 0 ? "+" : ""}$${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
+        </div>
+
+        <div class="memo">${p.memo}</div>
+      `;
+
+      postList.appendChild(card);
+    });
+  }
+
+  function addPost() {
     const ticker = document.getElementById("ticker").value;
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
@@ -170,37 +196,25 @@
     const profit = sell - buy;
     const percent = (profit / buy) * 100;
 
-    const color = profit >= 0 ? "#e53935" : "#2979ff";
+    const newPost = {
+      ticker,
+      profit,
+      percent,
+      memo,
+      date: new Date().toISOString().slice(0,10)
+    };
 
-    const today = new Date().toISOString().slice(0,10);
+    posts.unshift(newPost);
 
-    /* 게시물 생성 */
-    const card = document.createElement("div");
-    card.className = "card";
+    savePosts();
+    renderPosts();
 
-    card.innerHTML = `
-      <div class="profile">
-        <div class="avatar" style="background:#2979ff;">${ticker}</div>
-        <div>
-          <div class="title">${ticker} 매매 기록</div>
-          <div class="date">${today}</div>
-        </div>
-      </div>
-
-      <div class="profit" style="color:${color}">
-        ${profit >= 0 ? "+" : ""}$${profit.toFixed(2)} (${percent.toFixed(1)}%)
-      </div>
-
-      <div class="memo">${memo}</div>
-    `;
-
-    /* 최신 글 위에 추가 */
-    postList.prepend(card);
-
-    /* 입력 초기화 */
     modal.style.display = "none";
     document.querySelectorAll("input").forEach(i => i.value = "");
   }
+
+  /* 페이지 로드시 자동 렌더링 */
+  renderPosts();
 </script>
 
 </body>
