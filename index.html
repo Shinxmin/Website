@@ -197,29 +197,8 @@
     renderPosts();
 
     modal.style.display = "none";
-
-    <div style="
-      width:44px;
-      height:44px;
-      border-radius:50%;
-      background:${p.color};
-      color:#fff;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-weight:700;
-      margin-right:12px;
-      font-size:${getFontSize(p.ticker)};
-    ">
-  ${p.ticker}
+    
 </div>
-
-    function getFontSize(text) {
-      if (text.length <= 2) return "16px";
-      if (text.length === 3) return "14px";
-      if (text.length === 4) return "12px";
-      return "10px";
-    }
 
     document.querySelectorAll("input").forEach(i => {
       if (i.id === "color") {
