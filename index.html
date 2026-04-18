@@ -13,8 +13,43 @@
   <!-- 제목 -->
   <div style="font-size:30px; font-weight:800; margin-bottom:12px;">기록</div>
 
-  <!-- 작성 버튼 -->
+<div style="
+    display:flex;
+    gap:8px;
+    margin-bottom:16px;
+">
+
+  <!-- 왼쪽: 보유 달러 -->
+  <input id="myDollar" type="number" placeholder="내 보유 달러" style="
+      flex:1;
+      box-sizing:border-box;
+      padding:14px;
+      border-radius:16px;
+      border:1px solid #ddd;
+      outline:none;
+    ">
+
+  <!-- 오른쪽: 작성 버튼 -->
   <div onclick="openModal()" style="
+      padding:14px 18px;
+      border-radius:16px;
+      background:#3182f6;
+      color:#fff;
+      text-align:center;
+      font-weight:600;
+      cursor:pointer;
+      white-space:nowrap;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    ">
+    작성
+  </div>
+
+</div>
+
+  <!-- 기존 작성 버튼 -->
+  <!--<div onclick="openModal()" style="
     width:100%;
     box-sizing:border-box;
     padding:14px;
@@ -27,7 +62,7 @@
     cursor:pointer;
   ">
     작성
-  </div>
+  </div>--!>
 
   <!-- 게시물 리스트 -->
   <div id="postList"></div>
