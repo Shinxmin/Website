@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minimal Mobile UI</title>
+<title>Stock Post</title>
 
 <style>
   * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -18,26 +17,16 @@
     color: #222;
   }
 
-  /* 전체 컨테이너 (아이폰 비율 고려) */
   .container {
     max-width: 420px;
     margin: 0 auto;
     padding: 16px;
   }
 
-  /* 상단 영역 */
-  .header {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
-  /* 카드 공통 */
   .card {
     background: #fff;
     border-radius: 20px;
     padding: 18px;
-    margin-bottom: 16px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.04);
   }
 
@@ -51,7 +40,13 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: #e9edf1;
+    background: #2979ff;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 12px;
   }
 
@@ -65,18 +60,26 @@
     color: #888;
   }
 
-  /* 게시물 내용 */
-  .content {
-    margin-top: 14px;
-    font-size: 15px;
-    line-height: 1.6;
-    color: #333;
+  /* 수익 강조 */
+  .profit {
+    margin-top: 18px;
+    font-size: 22px;
+    font-weight: 700;
+    color: #e53935;
   }
 
-  /* 버튼 영역 */
+  /* 설명 */
+  .content {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  /* 버튼 */
   .actions {
     display: flex;
-    margin-top: 16px;
+    margin-top: 18px;
   }
 
   .btn {
@@ -94,15 +97,6 @@
     margin-right: 0;
   }
 
-  /* 작은 카드 리스트 */
-  .mini-card {
-    padding: 14px;
-    border-radius: 16px;
-    background: #f7f8fa;
-    margin-bottom: 10px;
-    font-size: 14px;
-  }
-
 </style>
 </head>
 
@@ -110,20 +104,22 @@
 
 <div class="container">
 
-  <div class="header">홈</div>
-
-  <!-- 메인 게시물 -->
   <div class="card">
+    
     <div class="profile">
-      <div class="avatar"></div>
+      <div class="avatar">QLD</div>
       <div>
-        <div class="name">홍길동</div>
-        <div class="sub">방금 전</div>
+        <div class="name">QLD 투자 기록</div>
+        <div class="sub">방금 전 · 수익 실현</div>
       </div>
     </div>
 
+    <div class="profit">
+      + $167.72 (14.8%)
+    </div>
+
     <div class="content">
-      오늘은 집중이 잘 되는 하루다. 조용한 공간에서 정리하는 시간이 꽤 중요하다는 걸 다시 느꼈다.
+      목표 수익률 도달로 일부 물량을 정리했다. 계획대로 진행된 트레이드.
     </div>
 
     <div class="actions">
@@ -131,13 +127,7 @@
       <div class="btn">댓글</div>
       <div class="btn">공유</div>
     </div>
-  </div>
 
-  <!-- 보조 정보 카드 -->
-  <div class="card">
-    <div class="mini-card">📌 오늘의 기록 3개 완료</div>
-    <div class="mini-card">📊 이번 주 집중도 82%</div>
-    <div class="mini-card">🕒 평균 작업 시간 4시간</div>
   </div>
 
 </div>
