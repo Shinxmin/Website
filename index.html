@@ -35,14 +35,27 @@
     text-align: center;
     font-weight: 600;
     margin-bottom: 16px;
+    cursor: pointer;
   }
 
+  /* 카드 */
   .card {
+    position: relative;
     background: #fff;
     border-radius: 20px;
     padding: 18px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.04);
     margin-bottom: 14px;
+  }
+
+  /* 삭제 버튼 */
+  .delete-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 12px;
+    color: #aaa;
+    cursor: pointer;
   }
 
   .profile {
@@ -93,9 +106,9 @@
     border-radius: 20px 20px 0 0;
     padding: 20px;
     display: none;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
     max-height: 80vh;
     overflow-y: auto;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
   }
 
   input {
@@ -113,6 +126,7 @@
     border-radius: 14px;
     text-align: center;
     font-weight: 600;
+    cursor: pointer;
   }
 
 </style>
@@ -122,10 +136,10 @@
 
 <div class="container">
 
-  <!-- [상단 제목] -->
+  <!-- 상단 제목 -->
   <div class="header">기록</div>
 
-  <!-- [작성 버튼] -->
+  <!-- 작성 버튼 -->
   <div class="write-btn" onclick="openModal()">작성</div>
 
   <!-- 게시물 리스트 -->
@@ -136,34 +150,17 @@
 <!-- 입력 모달 -->
 <div class="modal" id="modal">
 
-  <!-- [1] 티커 -->
+  <!-- 입력 필드 -->
   <input id="ticker" placeholder="티커">
-
-  <!-- [2] 게시글 제목 -->
   <input id="postTitle" placeholder="게시글 제목">
-
-  <!-- [3] 프로필 색상 (hex 입력) -->
-  <input id="color" placeholder="프로필 색상 (예: #2979ff)">
-
-  <!-- [4] 매매 일시 -->
+  <input id="color" placeholder="프로필 색상 (#2979ff)">
   <input id="date" type="datetime-local">
-
-  <!-- [5] 매수 금액 -->
   <input id="buy" type="number" placeholder="매수 금액">
-
-  <!-- [6] 매도 금액 -->
   <input id="sell" type="number" placeholder="매도 금액">
-
-  <!-- [7] 수량 -->
   <input id="qty" type="number" placeholder="수량">
-
-  <!-- [8] 수수료 -->
   <input id="fee" type="number" placeholder="수수료">
-
-  <!-- [9] 메모 -->
   <input id="memo" placeholder="메모">
 
-  <!-- [10] 저장 버튼 -->
   <div class="save-btn" onclick="addPost()">저장</div>
 
 </div>
@@ -182,16 +179,33 @@
     localStorage.setItem("posts", JSON.stringify(posts));
   }
 
+  /* 삭제 기능 */
+  function deletePost(index) {
+    posts.splice(index, 1);
+    savePosts();
+    renderPosts();
+  }
+
+  /* 렌더링 */
   function renderPosts() {
     postList.innerHTML = "";
 
-    posts.forEach(p => {
+    posts.forEach((p, index) => {
+
       const card = document.createElement("div");
       card.className = "card";
 
+      /* 삭제 버튼 (안정적 이벤트 연결) */
+      const deleteBtn = document.createElement("div");
+      deleteBtn.className = "delete-btn";
+      deleteBtn.innerText = "삭제";
+      deleteBtn.addEventListener("click", () => deletePost(index));
+
+      /* 수익 색상 */
       const color = p.profit >= 0 ? "#e53935" : "#2979ff";
 
-      card.innerHTML = `
+      const content = document.createElement("div");
+      content.innerHTML = `
         <div class="profile">
           <div class="avatar" style="background:${p.color}">${p.ticker}</div>
           <div>
@@ -207,10 +221,13 @@
         <div class="memo">${p.memo}</div>
       `;
 
+      card.appendChild(deleteBtn);
+      card.appendChild(content);
       postList.appendChild(card);
     });
   }
 
+  /* 게시물 추가 */
   function addPost() {
 
     const ticker = document.getElementById("ticker").value;
@@ -225,7 +242,7 @@
 
     if (!ticker || !buy || !sell || !qty) return;
 
-    /* 핵심 계산 */
+    /* 계산 */
     const totalBuy = buy * qty;
     const totalSell = sell * qty;
     const profit = totalSell - totalBuy - fee;
@@ -250,6 +267,7 @@
     document.querySelectorAll("input").forEach(i => i.value = "");
   }
 
+  /* 초기 렌더 */
   renderPosts();
 </script>
 
