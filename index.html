@@ -45,6 +45,18 @@
 .del-btn:hover {
   color:#333;
 }
+
+/* ✔ 입력창 스타일 통일 */
+.modal-input {
+  width:100%;
+  box-sizing:border-box;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:1px solid #eee;
+  outline:none;
+  font-size:14px;
+}
 </style>
 
 </head>
@@ -99,16 +111,24 @@
   box-shadow:0 -4px 20px rgba(0,0,0,0.1);
 ">
 
-  <input id="ticker" placeholder="티커" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="postTitle" placeholder="제목" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="color" value="#000000" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="date" type="date" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="buy" type="number" placeholder="구매 가격" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="sell" type="number" placeholder="판매 가격" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="qty" type="number" placeholder="수량" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="memo" placeholder="메모" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="ticker" placeholder="티커" class="modal-input">
+  <input id="postTitle" placeholder="제목" class="modal-input">
+  <input id="color" value="#000000" class="modal-input">
+  <input id="date" type="date" class="modal-input">
+  <input id="buy" type="number" placeholder="구매 가격" class="modal-input">
+  <input id="sell" type="number" placeholder="판매 가격" class="modal-input">
+  <input id="qty" type="number" placeholder="수량" class="modal-input">
+  <input id="memo" placeholder="메모" class="modal-input">
 
-  <div onclick="addPost()" style="padding:14px; background:#3182f6; color:#fff; border-radius:14px; text-align:center; font-weight:600;">
+  <div onclick="addPost()" style="
+    padding:14px;
+    background:#3182f6;
+    color:#fff;
+    border-radius:14px;
+    text-align:center;
+    font-weight:600;
+    cursor:pointer;
+  ">
     저장
   </div>
 
@@ -122,24 +142,21 @@ const totalEl = document.getElementById("totalProfitText");
 
 let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
-/* 모달 */
 function openModal() {
   modal.style.display = "block";
 }
 
-/* 저장 */
 function savePosts() {
   localStorage.setItem("posts", JSON.stringify(posts));
 }
 
-/* 삭제 */
 function deletePost(index) {
   posts.splice(index, 1);
   savePosts();
   renderPosts();
 }
 
-/* ✔ 카운트업 핵심 */
+/* 카운트업 */
 function animateNumber(from, to, duration = 500) {
   const start = performance.now();
 
@@ -149,25 +166,20 @@ function animateNumber(from, to, duration = 500) {
 
     totalEl.innerText = `$ ${value.toFixed(2)}`;
 
-    if (progress < 1) {
-      requestAnimationFrame(frame);
-    }
+    if (progress < 1) requestAnimationFrame(frame);
   }
 
   requestAnimationFrame(frame);
 }
 
-/* 누적 수익 */
 let lastTotal = 0;
 
 function renderTotalProfit() {
   const total = posts.reduce((sum, p) => sum + (p.profit || 0), 0);
-
   animateNumber(lastTotal, total);
   lastTotal = total;
 }
 
-/* 리스트 */
 function renderPosts() {
 
   postList.innerHTML = "";
@@ -230,7 +242,6 @@ function renderPosts() {
   renderTotalProfit();
 }
 
-/* 추가 */
 function addPost() {
 
   const ticker = document.getElementById("ticker").value;
