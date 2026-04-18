@@ -177,13 +177,13 @@
     const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
     const memo = document.getElementById("memo").value; */
 
-    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
-    
     /* 단가 방식 계산 */
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
     const qty = parseFloat(document.getElementById("qty").value);
     const memo = document.getElementById("memo").value;
+
+    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
 
     posts.unshift({
       ticker,
