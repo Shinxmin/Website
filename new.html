@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>앱</title>
+
+<style>
+body {
+  margin:0;
+  font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+  background:#fff;
+}
+
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* 카드 */
+.card {
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.04);
+  animation:cardIn 0.25s ease;
+  transition:0.12s;
+}
+
+.card:active {
+  transform:scale(0.98);
+}
+
+/* 삭제 */
+.del {
+  position:absolute;
+  right:16px;
+  top:16px;
+  font-size:12px;
+  color:#aaa;
+}
+
+/* input */
+.input {
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:1px solid #eee;
+  outline:none;
+}
+
+/* 버튼 */
+.btn {
+  padding:14px;
+  background:#3182f6;
+  color:#fff;
+  border-radius:14px;
+  text-align:center;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn:active {
+  transform:scale(0.97);
+}
+
+/* 하단 탭 */
+.tabbar {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  display:flex;
+  border-top:1px solid #eee;
+  background:#fff;
+}
+
+.tab {
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:13px;
+  color:#999;
+}
+
+.tab.active {
+  color:#3182f6;
+  font-weight:700;
+}
+
+/* 상단 */
+.container {
+  max-width:420px;
+  margin:0 auto;
+  padding:16px;
+  padding-bottom:80px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <div style="font-size:30px; font-weight:800;" id="title">기록</div>
+
+  <!-- 기록 -->
+  <div id="recordView">
+
+    <div onclick="openRecordModal()" class="btn" style="margin-top:12px;">
+      작성
+    </div>
+
+    <div id="recordList" style="margin-top:16px;"></div>
+
+  </div>
+
+  <!-- 커뮤니티 -->
+  <div id="communityView" style="display:none;">
+
+    <div onclick="openCommunityModal()" class="btn" style="margin-top:12px;">
+      작성
+    </div>
+
+    <div id="communityList" style="margin-top:16px;"></div>
+
+  </div>
+
+</div>
+
+<!-- 모달 -->
+<div id="modal" style="
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:20px;
+  display:none;
+  max-height:80vh;
+  overflow:auto;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.1);
+">
+
+  <div id="recordForm">
+
+    <input id="ticker" class="input" placeholder="티커">
+    <input id="title" class="input" placeholder="제목">
+    <input id="buy" class="input" type="number" placeholder="구매">
+    <input id="sell" class="input" type="number" placeholder="판매">
+    <input id="qty" class="input" type="number" placeholder="수량">
+
+    <div onclick="addRecord()" class="btn">저장</div>
+
+  </div>
+
+  <div id="communityForm" style="display:none;">
+
+    <input id="c_title" class="input" placeholder="제목">
+    <textarea id="c_body" class="input" style="height:120px;"></textarea>
+
+    <div onclick="addCommunity()" class="btn">저장</div>
+
+  </div>
+
+</div>
+
+<!-- 탭 -->
+<div class="tabbar">
+
+  <div class="tab active" onclick="switchTab('record')" id="tab_record">
+    기록
+  </div>
+
+  <div class="tab" onclick="switchTab('community')" id="tab_community">
+    커뮤니티
+  </div>
+
+</div>
+
+<script>
+
+let tab = "record";
+
+let records = JSON.parse(localStorage.getItem("records")) || [];
+let community = JSON.parse(localStorage.getItem("community")) || [];
+
+const modal = document.getElementById("modal");
+
+function switchTab(t) {
+
+  tab = t;
+
+  document.getElementById("recordView").style.display = t === "record" ? "block" : "none";
+  document.getElementById("communityView").style.display = t === "community" ? "block" : "none";
+
+  document.getElementById("tab_record").classList.toggle("active", t==="record");
+  document.getElementById("tab_community").classList.toggle("active", t==="community");
+
+  document.getElementById("title").innerText = t === "record" ? "기록" : "커뮤니티";
+
+  render();
+}
+
+/* 모달 */
+function openRecordModal() {
+  modal.style.display = "block";
+  document.getElementById("recordForm").style.display = "block";
+  document.getElementById("communityForm").style.display = "none";
+}
+
+function openCommunityModal() {
+  modal.style.display = "block";
+  document.getElementById("recordForm").style.display = "none";
+  document.getElementById("communityForm").style.display = "block";
+}
+
+/* 기록 */
+function addRecord() {
+
+  const ticker = document.getElementById("ticker").value;
+  const title = document.getElementById("title").value;
+  const buy = parseFloat(document.getElementById("buy").value);
+  const sell = parseFloat(document.getElementById("sell").value);
+  const qty = parseFloat(document.getElementById("qty").value);
+
+  const profit = sell - buy;
+
+  records.unshift({ ticker, title, buy, sell, qty, profit });
+
+  localStorage.setItem("records", JSON.stringify(records));
+
+  modal.style.display = "none";
+  render();
+}
+
+/* 커뮤니티 */
+function addCommunity() {
+
+  const title = document.getElementById("c_title").value;
+  const body = document.getElementById("c_body").value;
+
+  community.unshift({
+    title,
+    body,
+    date: new Date().toLocaleDateString()
+  });
+
+  localStorage.setItem("community", JSON.stringify(community));
+
+  modal.style.display = "none";
+  render();
+}
+
+/* 렌더 */
+function render() {
+
+  const r = document.getElementById("recordList");
+  const c = document.getElementById("communityList");
+
+  r.innerHTML = "";
+  c.innerHTML = "";
+
+  records.forEach(x => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <div style="font-weight:700">${x.title}</div>
+      <div style="font-size:12px;color:#999">${x.ticker}</div>
+      <div style="margin-top:10px;">$ ${x.profit}</div>
+    `;
+    r.appendChild(div);
+  });
+
+  community.forEach(x => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <div style="font-weight:700">${x.title}</div>
+      <div style="margin-top:8px; font-size:14px">${x.body}</div>
+      <div style="margin-top:10px; font-size:12px; color:#aaa">${x.date}</div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+render();
+
+</script>
+
+</body>
+</html>
