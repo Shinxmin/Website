@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>대시보드</title>
+<title>기록</title>
 
 <style>
 @keyframes cardIn {
@@ -11,6 +11,13 @@
   to { opacity:1; transform:translateY(0); }
 }
 
+body {
+  margin:0;
+  font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+  background:#fff;
+}
+
+/* 카드 */
 .card {
   position: relative;
   background: #fff;
@@ -19,9 +26,16 @@
   margin-bottom: 14px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.04);
   animation: cardIn 0.25s ease;
-  transition: all 0.2s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* ✔ press 효과 (hover 대신) */
+.card:active {
+  transform: scale(0.98);
+}
+
+/* 수익 glow */
 .card-profit {
   box-shadow:
     0 0 0 1px rgba(229,57,53,0.35),
@@ -29,10 +43,7 @@
     0 6px 18px rgba(0,0,0,0.04);
 }
 
-.card:hover {
-  transform: translateY(-2px);
-}
-
+/* 삭제 버튼 */
 .del-btn {
   position:absolute;
   top:16px;
@@ -40,13 +51,17 @@
   font-size:12px;
   color:#aaa;
   cursor:pointer;
-  transition:0.2s;
+  transition:0.12s;
+  -webkit-tap-highlight-color: transparent;
 }
-.del-btn:hover {
+
+/* ✔ press 효과 */
+.del-btn:active {
+  transform: scale(0.92);
   color:#333;
 }
 
-/* ✔ 입력창 스타일 통일 */
+/* 입력창 */
 .modal-input {
   width:100%;
   box-sizing:border-box;
@@ -57,15 +72,21 @@
   outline:none;
   font-size:14px;
 }
+
+/* 버튼 press */
+button, div[onclick] {
+  -webkit-tap-highlight-color: transparent;
+}
+
 </style>
 
 </head>
 
-<body style="margin:0; font-family:-apple-system, BlinkMacSystemFont, sans-serif; background:#fff;">
+<body>
 
 <div style="max-width:420px; margin:0 auto; padding:16px;">
 
-  <div style="font-size:30px; font-weight:800; margin-bottom:12px;">대시보드</div>
+  <div style="font-size:30px; font-weight:800; margin-bottom:12px;">기록</div>
 
   <div style="display:flex; gap:8px; margin-bottom:16px;">
 
@@ -86,7 +107,13 @@
       justify-content:center;
       font-weight:600;
       cursor:pointer;
-    ">
+      transition:0.12s;
+    "
+    onmousedown="this.style.transform='scale(0.95)'"
+    onmouseup="this.style.transform='scale(1)'"
+    ontouchstart="this.style.transform='scale(0.95)'"
+    ontouchend="this.style.transform='scale(1)'"
+    >
       작성
     </div>
 
@@ -128,7 +155,13 @@
     text-align:center;
     font-weight:600;
     cursor:pointer;
-  ">
+    transition:0.12s;
+  "
+  onmousedown="this.style.transform='scale(0.97)'"
+  onmouseup="this.style.transform='scale(1)'"
+  ontouchstart="this.style.transform='scale(0.97)'"
+  ontouchend="this.style.transform='scale(1)'"
+  >
     저장
   </div>
 
@@ -276,7 +309,6 @@ function addPost() {
   renderPosts();
 
   modal.style.display = "none";
-
   document.querySelectorAll("input").forEach(i => i.value = "");
 }
 
