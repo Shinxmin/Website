@@ -198,6 +198,13 @@
 
     modal.style.display = "none";
 
+    function getFontSize(text) {
+      if (text.length <= 2) return "16px";
+      if (text.length === 3) return "14px";
+      if (text.length === 4) return "12px";
+      return "10px";
+    }
+
     document.querySelectorAll("input").forEach(i => {
       if (i.id === "color") {
         i.value = "#3182f6";
