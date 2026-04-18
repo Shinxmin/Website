@@ -10,7 +10,6 @@
     margin: 0;
     background: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #222;
   }
 
   .container {
@@ -22,7 +21,20 @@
   .header {
     font-size: 22px;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* 기록 버튼 */
+  .record-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    background: #2979ff;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 16px;
+    cursor: pointer;
   }
 
   .card {
@@ -30,6 +42,7 @@
     border-radius: 20px;
     padding: 18px;
     box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+    margin-bottom: 14px;
   }
 
   .profile {
@@ -50,27 +63,54 @@
   }
 
   .title {
-    font-size: 16px;
     font-weight: 600;
   }
 
   .date {
     font-size: 12px;
     color: #999;
-    margin-top: 2px;
   }
 
   .profit {
-    margin-top: 16px;
+    margin-top: 14px;
     font-size: 20px;
     font-weight: 700;
   }
 
   .memo {
-    margin-top: 10px;
+    margin-top: 8px;
     font-size: 14px;
     color: #555;
-    line-height: 1.5;
+  }
+
+  /* 모달 */
+  .modal {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+    padding: 20px;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    display: none;
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+  }
+
+  .submit {
+    padding: 12px;
+    background: #2979ff;
+    color: #fff;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
   }
 
 </style>
@@ -80,40 +120,88 @@
 
 <div class="container">
 
-  <!-- 상단 페이지 제목 (여기 수정) -->
+  <!-- 상단 제목 -->
   <div class="header">홈</div>
 
-  <div class="card">
+  <!-- 기록 버튼 -->
+  <div class="record-btn" onclick="openModal()">+ 기록 추가</div>
 
-    <div class="profile">
-
-      <!-- [1] 프로필 설정: 티커명과 배경색 수정 -->
-      <!-- background 값 변경 / 텍스트 변경 -->
-      <div class="avatar" style="background:#2979ff;">QLD</div>
-
-      <div>
-        <!-- [2] 게시물 제목 수정 -->
-        <div class="title">QLD</div>
-
-        <!-- [3] 매매 날짜 수정 -->
-        <div class="date">2026년 04월18일</div>
-      </div>
-
-    </div>
-
-    <!-- [4] 수익 금액 및 수익률 수정 (색상도 여기서 변경 가능) -->
-    <div class="profit" style="color:#e53935;">
-    $167.72 (14.8%)
-    </div>
-
-    <!-- [5] 추가 메모 작성 -->
-    <div class="memo">
-    나스닥 전고점 진입 및 수익실현 욕구로 매도
-    </div>
-
-  </div>
+  <!-- 게시물 리스트 영역 -->
+  <div id="postList"></div>
 
 </div>
+
+<!-- 입력 모달 -->
+<div class="modal" id="modal">
+
+  <!-- [입력] 티커 -->
+  <input id="ticker" placeholder="티커 (예: QLD)">
+
+  <!-- [입력] 매수 금액 -->
+  <input id="buy" type="number" placeholder="매수 금액">
+
+  <!-- [입력] 매도 금액 -->
+  <input id="sell" type="number" placeholder="매도 금액">
+
+  <!-- [입력] 메모 -->
+  <input id="memo" placeholder="메모">
+
+  <div class="submit" onclick="addPost()">기록 저장</div>
+
+</div>
+
+<script>
+  const modal = document.getElementById("modal");
+  const postList = document.getElementById("postList");
+
+  function openModal() {
+    modal.style.display = "block";
+  }
+
+  function addPost() {
+
+    const ticker = document.getElementById("ticker").value;
+    const buy = parseFloat(document.getElementById("buy").value);
+    const sell = parseFloat(document.getElementById("sell").value);
+    const memo = document.getElementById("memo").value;
+
+    if (!ticker || !buy || !sell) return;
+
+    const profit = sell - buy;
+    const percent = (profit / buy) * 100;
+
+    const color = profit >= 0 ? "#e53935" : "#2979ff";
+
+    const today = new Date().toISOString().slice(0,10);
+
+    /* 게시물 생성 */
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <div class="profile">
+        <div class="avatar" style="background:#2979ff;">${ticker}</div>
+        <div>
+          <div class="title">${ticker} 매매 기록</div>
+          <div class="date">${today}</div>
+        </div>
+      </div>
+
+      <div class="profit" style="color:${color}">
+        ${profit >= 0 ? "+" : ""}$${profit.toFixed(2)} (${percent.toFixed(1)}%)
+      </div>
+
+      <div class="memo">${memo}</div>
+    `;
+
+    /* 최신 글 위에 추가 */
+    postList.prepend(card);
+
+    /* 입력 초기화 */
+    modal.style.display = "none";
+    document.querySelectorAll("input").forEach(i => i.value = "");
+  }
+</script>
 
 </body>
 </html>
