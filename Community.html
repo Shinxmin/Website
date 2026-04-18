@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>커뮤니티</title>
+
+<style>
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+body {
+  margin:0;
+  font-family:-apple-system, BlinkMacSystemFont, sans-serif;
+  background:#fff;
+}
+
+/* 카드 */
+.card {
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.04);
+  animation:cardIn 0.25s ease;
+  transition:transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.card:active {
+  transform:scale(0.98);
+}
+
+/* 작성 버튼 */
+.write-btn {
+  background:#3182f6;
+  color:#fff;
+  padding:14px;
+  border-radius:14px;
+  text-align:center;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.write-btn:active {
+  transform:scale(0.96);
+}
+
+/* input */
+.input {
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:1px solid #eee;
+  outline:none;
+  font-size:14px;
+}
+
+/* textarea */
+textarea {
+  width:100%;
+  box-sizing:border-box;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid #eee;
+  outline:none;
+  font-size:14px;
+  resize:none;
+  height:120px;
+}
+
+/* 삭제 */
+.del {
+  font-size:12px;
+  color:#aaa;
+  position:absolute;
+  top:16px;
+  right:16px;
+  cursor:pointer;
+}
+.del:active {
+  transform:scale(0.92);
+}
+</style>
+
+</head>
+
+<body>
+
+<div style="max-width:420px; margin:0 auto; padding:16px;">
+
+  <!-- 제목 -->
+  <div style="font-size:30px; font-weight:800;">커뮤니티</div>
+
+  <!-- 작성 버튼 -->
+  <div onclick="openModal()" style="margin-top:12px;">
+    <div class="write-btn">작성</div>
+  </div>
+
+  <!-- 리스트 -->
+  <div id="list" style="margin-top:16px;"></div>
+
+</div>
+
+<!-- 모달 -->
+<div id="modal" style="
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:20px;
+  display:none;
+  max-height:80vh;
+  overflow:auto;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.1);
+">
+
+  <input id="title" class="input" placeholder="제목">
+
+  <textarea id="body" placeholder="본문"></textarea>
+
+  <div onclick="addPost()" class="write-btn" style="margin-top:10px;">
+    저장
+  </div>
+
+</div>
+
+<script>
+
+let posts = JSON.parse(localStorage.getItem("community")) || [];
+
+const modal = document.getElementById("modal");
+const list = document.getElementById("list");
+
+function openModal() {
+  modal.style.display = "block";
+}
+
+/* 자동 저장 (draft) */
+document.getElementById("title").addEventListener("input", saveDraft);
+document.getElementById("body").addEventListener("input", saveDraft);
+
+function saveDraft() {
+  const draft = {
+    title: document.getElementById("title").value,
+    body: document.getElementById("body").value
+  };
+  localStorage.setItem("community_draft", JSON.stringify(draft));
+}
+
+/* draft 불러오기 */
+function loadDraft() {
+  const d = JSON.parse(localStorage.getItem("community_draft"));
+  if (!d) return;
+
+  document.getElementById("title").value = d.title || "";
+  document.getElementById("body").value = d.body || "";
+}
+
+function savePosts() {
+  localStorage.setItem("community", JSON.stringify(posts));
+}
+
+/* 추가 */
+function addPost() {
+
+  const title = document.getElementById("title").value;
+  const body = document.getElementById("body").value;
+
+  if (!title || !body) return;
+
+  posts.unshift({
+    title,
+    body,
+    date: new Date().toLocaleDateString()
+  });
+
+  savePosts();
+
+  localStorage.removeItem("community_draft");
+
+  document.getElementById("title").value = "";
+  document.getElementById("body").value = "";
+
+  modal.style.display = "none";
+
+  render();
+}
+
+/* 삭제 */
+function del(i) {
+  posts.splice(i, 1);
+  savePosts();
+  render();
+}
+
+/* 렌더 */
+function render() {
+
+  list.innerHTML = "";
+
+  posts.forEach((p, i) => {
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <div class="del" onclick="del(${i})">삭제</div>
+
+      <div style="font-size:16px; font-weight:700;">
+        ${p.title}
+      </div>
+
+      <div style="margin-top:8px; font-size:14px; color:#555; line-height:1.5;">
+        ${p.body}
+      </div>
+
+      <div style="margin-top:10px; font-size:12px; color:#aaa;">
+        ${p.date}
+      </div>
+    `;
+
+    list.appendChild(div);
+  });
+}
+
+loadDraft();
+render();
+
+</script>
+
+</body>
+</html>
