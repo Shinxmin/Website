@@ -166,18 +166,23 @@
     const rawDate = document.getElementById("date").value;
     const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
 
+    /* 단가 방식 계산 */
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
     const qty = parseFloat(document.getElementById("qty").value);
 
-    // ✅ 여기 추가 (핵심 수정)
-    const memo = document.getElementById("memo").value;
-
     if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
 
+    /* 1. 단가 차이 */
     const diff = sell - buy;
+
+    /* 2. 총 수익 */
     const profit = diff * qty;
+
+    /* 3. 총 투자금 */
     const totalBuy = buy * qty;
+
+    /* 4. 수익률 */
     const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
 
     posts.unshift({
