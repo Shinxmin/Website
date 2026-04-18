@@ -167,11 +167,9 @@
 
     if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
 
-    /* 계산 (단가 차이 → 수량 곱) */
-    const diff = sell - buy;
-    const profit = diff * qty;
-    const totalBuy = buy * qty;
-    const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
+    /* 계산 (총금액 방식) */
+  const profit = sell - buy;
+  const percent = buy !== 0 ? (profit / buy) * 100 : 0;
 
     const newPost = {
       ticker,
