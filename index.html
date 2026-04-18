@@ -13,100 +13,25 @@
   <!-- 제목 -->
   <div style="font-size:30px; font-weight:800; margin-bottom:12px;">기록</div>
 
-  <!-- 달러 + 작성 -->
-  <div style="display:flex; gap:8px; margin-bottom:16px;">
-
-    <!-- 왼쪽: 달러 카드 -->
-    <div style="
-        flex:1;
-        padding:14px;
-        border-radius:16px;
-        background:#f7f8fa;
-        box-sizing:border-box;
-    ">
-
-      <div style="font-size:12px; color:#888;">달러</div>
-
-      <div id="totalDollarText" style="font-size:18px; font-weight:700; margin-top:4px;">
-        $ 0
-      </div>
-
-      <div id="profitDollarText" style="font-size:13px; color:#22c55e; margin-top:4px;">
-        (+ $0)
-      </div>
-
-      <div onclick="openSetting()" style="
-          margin-top:10px;
-          font-size:12px;
-          color:#3182f6;
-          cursor:pointer;
-      ">
-        설정
-      </div>
-
-    </div>
-
-    <!-- 오른쪽: 작성 버튼 -->
-    <div onclick="openModal()" style="
-        width:90px;
-        border-radius:16px;
-        background:#3182f6;
-        color:#fff;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-weight:600;
-        cursor:pointer;
-    ">
-      작성
-    </div>
-
+  <!-- 작성 버튼 -->
+  <div onclick="openModal()" style="
+    width:100%;
+    box-sizing:border-box;
+    padding:14px;
+    border-radius:16px;
+    background:#3182f6;
+    color:#fff;
+    text-align:center;
+    font-weight:600;
+    margin-bottom:16px;
+    cursor:pointer;
+  ">
+    작성
   </div>
 
   <!-- 게시물 리스트 -->
   <div id="postList"></div>
 
-</div>
-
-<!-- 설정 모달 -->
-<div id="settingModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-">
-
-  <div style="
-    width:300px;
-    background:#fff;
-    margin:20% auto;
-    padding:16px;
-    border-radius:12px;
-  ">
-
-    <div style="margin-bottom:8px;">보유 달러</div>
-
-    <input id="inputDollar" type="number" style="
-      width:100%;
-      padding:10px;
-      border:1px solid #ddd;
-      border-radius:8px;
-      box-sizing:border-box;
-    ">
-
-    <button onclick="saveDollar()" style="
-      margin-top:10px;
-      width:100%;
-      padding:10px;
-      background:#3182f6;
-      color:#fff;
-      border:none;
-      border-radius:8px;
-    ">
-      저장
-    </button>
-
-  </div>
 </div>
 
 <!-- 입력 모달 -->
@@ -125,14 +50,29 @@
   box-sizing:border-box;
 ">
 
-  <input id="ticker" placeholder="티커" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="postTitle" placeholder="제목" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="color" value="#3182f6" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="date" type="date" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="buy" type="number" placeholder="구매 가격" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="sell" type="number" placeholder="판매 가격" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="qty" type="number" placeholder="수량(표시용)" style="width:100%; padding:10px; margin-bottom:10px;">
-  <input id="memo" placeholder="메모" style="width:100%; padding:10px; margin-bottom:10px;">
+  <input id="ticker" placeholder="티커"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="postTitle" placeholder="제목"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="color" value="#000000" placeholder="색상"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="date" type="date"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee; appearance:none; -webkit-appearance:none;">
+
+  <input id="buy" type="number" placeholder="구매 가격"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="sell" type="number" placeholder="판매 가격"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="qty" type="number" placeholder="수량"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="memo" placeholder="메모"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
   <div onclick="addPost()" style="
     padding:14px;
@@ -151,39 +91,15 @@
 <script>
   const modal = document.getElementById("modal");
   const postList = document.getElementById("postList");
-  const settingModal = document.getElementById("settingModal");
 
   let posts = JSON.parse(localStorage.getItem("posts")) || [];
-
-  let totalDollar = Number(localStorage.getItem("totalDollar")) || 0;
-  let profitDollar = Number(localStorage.getItem("profitDollar")) || 0;
 
   function openModal() {
     modal.style.display = "block";
   }
 
-  function openSetting() {
-    document.getElementById("inputDollar").value = totalDollar;
-    settingModal.style.display = "block";
-  }
-
-  function saveDollar() {
-    totalDollar = Number(document.getElementById("inputDollar").value) || 0;
-    localStorage.setItem("totalDollar", totalDollar);
-    settingModal.style.display = "none";
-    renderDollar();
-  }
-
   function savePosts() {
     localStorage.setItem("posts", JSON.stringify(posts));
-  }
-
-  function renderDollar() {
-    document.getElementById("totalDollarText").innerText =
-      `$ ${totalDollar.toLocaleString()}`;
-
-    document.getElementById("profitDollarText").innerText =
-      `(+ $${profitDollar.toLocaleString()})`;
   }
 
   function deletePost(index) {
@@ -253,24 +169,21 @@
 
     const ticker = document.getElementById("ticker").value;
     const title = document.getElementById("postTitle").value;
-    const color = document.getElementById("color").value;
+    const color = document.getElementById("color").value || "#3182f6";
 
     const rawDate = document.getElementById("date").value;
     const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
 
-    const buy = parseFloat(document.getElementById("buy").value);
-    const sell = parseFloat(document.getElementById("sell").value);
-    const qty = parseFloat(document.getElementById("qty").value);
-    const memo = document.getElementById("memo").value;
+   const buy = parseFloat(document.getElementById("buy").value);
+   const sell = parseFloat(document.getElementById("sell").value);
+   const qty = parseFloat(document.getElementById("qty").value); // 입력은 유지 (표시용)
+   const memo = document.getElementById("memo").value;
 
-    if (isNaN(buy) || isNaN(sell)) return;
+   if (isNaN(buy) || isNaN(sell)) return;
 
-    const profit = sell - buy;
-    const percent = buy !== 0 ? (profit / buy) * 100 : 0;
-
-    // 누적 수익 반영
-    profitDollar += profit;
-    localStorage.setItem("profitDollar", profitDollar);
+   /* 단가 방식 (qty 미사용) */
+   const profit = sell - buy;
+   const percent = buy !== 0 ? (profit / buy) * 100 : 0;
 
     posts.unshift({
       ticker,
@@ -285,19 +198,19 @@
 
     savePosts();
     renderPosts();
-    renderDollar();
 
     modal.style.display = "none";
 
     document.querySelectorAll("input").forEach(i => {
-      if (i.id === "color") i.value = "#3182f6";
-      else i.value = "";
+      if (i.id === "color") {
+        i.value = "#3182f6";
+      } else {
+        i.value = "";
+      }
     });
   }
 
   renderPosts();
-  renderDollar();
-
 </script>
 
 </body>
