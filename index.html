@@ -4,147 +4,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>기록</title>
-
-<style>
-    {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    background: #ffffff;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  }
-
-  .container {
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 16px;
-  }
-
-  /* 상단 제목 */
-  .header {
-    font-size: 26px;
-    font-weight: 800;
-    margin-bottom: 12px;
-  }
-
-  /* 작성 버튼 */
-  .write-btn {
-    width: 100%;
-    box-sizing:border-box;
-    padding: 14px;
-    border-radius: 16px;
-    background: #3182f6;
-    color: #fff;
-    text-align: center;
-    font-weight: 600;
-    margin-bottom: 16px;
-    cursor: pointer;
-  }
-
-  /* 카드 */
-  .card {
-    position: relative;
-    background: #fff;
-    border-radius: 20px;
-    padding: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.04);
-    margin-bottom: 14px;
-  }
-
-  /* 삭제 버튼 */
-  .delete-btn {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    font-size: 12px;
-    color: #aaa;
-    cursor: pointer;
-  }
-
-  .profile {
-    display: flex;
-    align-items: center;
-  }
-
-  .avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: 700;
-    margin-right: 12px;
-  }
-
-  .title {
-    font-weight: 600;
-  }
-
-  .date {
-    font-size: 12px;
-    color: #999;
-  }
-
-  .profit {
-    margin-top: 14px;
-    font-size: 20px;
-    font-weight: 700;
-  }
-
-  .memo {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #555;
-  }
-
-  /* 모달 */
-  .modal {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-radius: 20px 20px 0 0;
-    padding: 20px;
-    display: none;
-    max-height: 80vh;
-    overflow-y: auto;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-  }
-
-  input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 12px;
-    border: 1px solid #eee;
-  }
-
-  .save-btn {
-    padding: 14px;
-    background: #3182f6;
-    color: #fff;
-    border-radius: 14px;
-    text-align: center;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-</style>
 </head>
 
-<body>
+<body style="margin:0; font-family:-apple-system, BlinkMacSystemFont, sans-serif; background:#fff;">
 
-<div class="container">
+<div style="max-width:420px; margin:0 auto; padding:16px;">
 
   <!-- 상단 제목 -->
-  <div class="header">기록</div>
+  <div style="font-size:26px; font-weight:800; margin-bottom:12px;">기록</div>
 
   <!-- 작성 버튼 -->
-  <div class="write-btn" onclick="openModal()">작성</div>
+  <div onclick="openModal()" style="
+    width:100%;
+    box-sizing:border-box;
+    padding:14px;
+    border-radius:16px;
+    background:#3182f6;
+    color:#fff;
+    text-align:center;
+    font-weight:600;
+    margin-bottom:16px;
+    cursor:pointer;
+  ">
+    작성
+  </div>
 
   <!-- 게시물 리스트 -->
   <div id="postList"></div>
@@ -152,20 +35,56 @@
 </div>
 
 <!-- 입력 모달 -->
-<div class="modal" id="modal">
+<div id="modal" style="
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:20px;
+  display:none;
+  max-height:80vh;
+  overflow:auto;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.1);
+">
 
-  <!-- 입력 필드 -->
-  <input id="ticker" placeholder="티커">
-  <input id="postTitle" placeholder="제목">
-  <input id="color" placeholder="색상">
-  <input id="date" type="date">
-  <input id="buy" type="number" placeholder="구매 금액">
-  <input id="sell" type="number" placeholder="판매 금액">
-  <input id="qty" type="number" placeholder="수량">
-  <input id="fee" type="number" placeholder="수수료">
-  <input id="memo" placeholder="메모">
+  <!-- 티커 -->
+  <input id="ticker" placeholder="티커" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <div class="save-btn" onclick="addPost()">저장</div>
+  <!-- 제목 -->
+  <input id="postTitle" placeholder="게시글 제목" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 색상 -->
+  <input id="color" placeholder="프로필 색상 (#2979ff)" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 날짜 -->
+  <input id="date" type="date" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 매수 -->
+  <input id="buy" type="number" placeholder="매수 단가 ($)" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 매도 -->
+  <input id="sell" type="number" placeholder="매도 단가 ($)" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 수량 -->
+  <input id="qty" type="number" placeholder="수량 (주)" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 메모 -->
+  <input id="memo" placeholder="메모" style="width:100%; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <!-- 저장 -->
+  <div onclick="addPost()" style="
+    padding:14px;
+    background:#3182f6;
+    color:#fff;
+    border-radius:14px;
+    text-align:center;
+    font-weight:600;
+    cursor:pointer;
+  ">
+    저장
+  </div>
 
 </div>
 
@@ -183,78 +102,75 @@
     localStorage.setItem("posts", JSON.stringify(posts));
   }
 
-  /* 삭제 기능 */
   function deletePost(index) {
     posts.splice(index, 1);
     savePosts();
     renderPosts();
   }
 
-  /* 렌더링 */
   function renderPosts() {
     postList.innerHTML = "";
 
     posts.forEach((p, index) => {
 
       const card = document.createElement("div");
-      card.className = "card";
+      card.style = "position:relative; background:#fff; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,0.04); margin-bottom:14px;";
 
-      /* 삭제 버튼 (안정적 이벤트 연결) */
-      const deleteBtn = document.createElement("div");
-      deleteBtn.className = "delete-btn";
-      deleteBtn.innerText = "삭제";
-      deleteBtn.addEventListener("click", () => deletePost(index));
+      /* 삭제 버튼 */
+      const del = document.createElement("div");
+      del.innerText = "삭제";
+      del.style = "position:absolute; top:16px; right:16px; font-size:12px; color:#aaa; cursor:pointer;";
+      del.onclick = () => deletePost(index);
 
-      /* 수익 색상 */
       const color = p.profit >= 0 ? "#e53935" : "#2979ff";
 
       const content = document.createElement("div");
       content.innerHTML = `
-        <div class="profile">
-          <div class="avatar" style="background:${p.color}">${p.ticker}</div>
+        <div style="display:flex; align-items:center;">
+          <div style="width:44px; height:44px; border-radius:50%; background:${p.color}; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; margin-right:12px;">
+            ${p.ticker}
+          </div>
           <div>
-            <div class="title">${p.title}</div>
-            <div class="date">${p.date}</div>
+            <div style="font-weight:600;">${p.title}</div>
+            <div style="font-size:12px; color:#999;">${p.date}</div>
           </div>
         </div>
 
-        <div class="profit" style="color:${color}">
+        <div style="margin-top:14px; font-size:20px; font-weight:700; color:${color};">
           ${p.profit >= 0 ? "+" : ""}$${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
         </div>
 
-        <div class="memo">${p.memo}</div>
+        <div style="margin-top:8px; font-size:14px; color:#555;">
+          ${p.memo}
+        </div>
       `;
 
-      card.appendChild(deleteBtn);
+      card.appendChild(del);
       card.appendChild(content);
       postList.appendChild(card);
     });
   }
 
-  /* 게시물 추가 */
   function addPost() {
 
     const ticker = document.getElementById("ticker").value;
     const title = document.getElementById("postTitle").value;
     const color = document.getElementById("color").value || "#2979ff";
-    const date = document.getElementById("date").value;
+    const rawDate = document.getElementById("date").value;
+    const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
+
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
     const qty = parseFloat(document.getElementById("qty").value);
+
     const memo = document.getElementById("memo").value;
 
-    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;;
+    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
 
-    /* 1. 단가 차이 */
+    /* 계산 (단가 차이 → 수량 곱) */
     const diff = sell - buy;
-
-    /* 2. 총 수익 */
     const profit = diff * qty;
-
-    /* 3. 총 매수금액 */
     const totalBuy = buy * qty;
-
-    /* 4. 수익률 */
     const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
 
     const newPost = {
@@ -262,6 +178,7 @@
       title,
       color,
       date,
+      profit,
       percent,
       memo
     };
@@ -275,7 +192,6 @@
     document.querySelectorAll("input").forEach(i => i.value = "");
   }
 
-  /* 초기 렌더 */
   renderPosts();
 </script>
 
