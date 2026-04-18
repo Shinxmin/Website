@@ -10,15 +10,13 @@
 
 <div style="max-width:420px; margin:0 auto; padding:16px;">
 
-  <div style="font-size:30px; font-weight:800; margin-bottom:10px;">기록</div>
+  <!-- 제목 -->
+  <div style="font-size:30px; font-weight:800; margin-bottom:12px;">기록</div>
 
-  <!-- 지수 -->
-  <div id="indexBar" style="font-size:13px; color:#555; margin-bottom:14px;">
-    불러오는 중...
-  </div>
-
+  <!-- 작성 버튼 -->
   <div onclick="openModal()" style="
     width:100%;
+    box-sizing:border-box;
     padding:14px;
     border-radius:16px;
     background:#3182f6;
@@ -31,58 +29,185 @@
     작성
   </div>
 
+  <!-- 게시물 리스트 -->
   <div id="postList"></div>
 
 </div>
 
+<!-- 입력 모달 -->
+<div id="modal" style="
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-radius:20px 20px 0 0;
+  padding:20px;
+  display:none;
+  max-height:80vh;
+  overflow:auto;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.1);
+  box-sizing:border-box;
+">
+
+  <input id="ticker" placeholder="티커"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="postTitle" placeholder="제목"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="color" value="#000000" placeholder="색상"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="date" type="date"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee; appearance:none; -webkit-appearance:none;">
+
+  <input id="buy" type="number" placeholder="구매 가격"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="sell" type="number" placeholder="판매 가격"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="qty" type="number" placeholder="수량"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <input id="memo" placeholder="메모"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+
+  <div onclick="addPost()" style="
+    padding:14px;
+    background:#3182f6;
+    color:#fff;
+    border-radius:14px;
+    text-align:center;
+    font-weight:600;
+    cursor:pointer;
+  ">
+    저장
+  </div>
+
+</div>
+
 <script>
-const indexBar = document.getElementById("indexBar");
+  const modal = document.getElementById("modal");
+  const postList = document.getElementById("postList");
 
-async function fetchIndices() {
-  try {
-    const yahooURL =
-      "https://query1.finance.yahoo.com/v7/finance/quote?symbols=^GSPC,^IXIC,NQ=F";
+  let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
-    const proxyURL =
-      "https://api.allorigins.win/raw?url=" + encodeURIComponent(yahooURL);
+  function openModal() {
+    modal.style.display = "block";
+  }
 
-    const res = await fetch(proxyURL);
-    const data = await res.json();
+  function savePosts() {
+    localStorage.setItem("posts", JSON.stringify(posts));
+  }
 
-    const r = data.quoteResponse.result;
+  function deletePost(index) {
+    posts.splice(index, 1);
+    savePosts();
+    renderPosts();
+  }
 
-    const sp = r.find(x => x.symbol === "^GSPC");
-    const nq = r.find(x => x.symbol === "^IXIC");
-    const nf = r.find(x => x.symbol === "NQ=F");
+  function renderPosts() {
+    postList.innerHTML = "";
 
-    const row = (name, obj) => {
-      if (!obj) return `<div>${name}: 데이터 없음</div>`;
+    posts.forEach((p, index) => {
 
-      const color = obj.regularMarketChange >= 0 ? "#e53935" : "#2979ff";
+      const card = document.createElement("div");
+      card.style = "position:relative; background:#fff; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,0.04); margin-bottom:14px;";
 
-      return `
-        <div style="margin-bottom:4px;">
-          ${name}:
-          <span style="color:${color}; font-weight:700;">
-            ${obj.regularMarketPrice.toFixed(2)}
-            (${obj.regularMarketChange.toFixed(2)}, ${obj.regularMarketChangePercent.toFixed(2)}%)
-          </span>
+      const del = document.createElement("div");
+      del.innerText = "삭제";
+      del.style = "position:absolute; top:16px; right:16px; font-size:12px; color:#aaa; cursor:pointer;";
+      del.onclick = () => deletePost(index);
+
+      const content = document.createElement("div");
+
+      content.innerHTML = `
+        <div style="display:flex; align-items:center;">
+          <div style="
+            width:44px;
+            height:44px;
+            border-radius:50%;
+            background:${p.color};
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:#fff;
+            font-weight:700;
+            margin-right:12px;
+          ">
+            ${p.ticker}
+          </div>
+
+          <div>
+            <div style="font-weight:600;">${p.title}</div>
+            <div style="font-size:12px; color:#999;">${p.date}</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px; font-size:20px; font-weight:700; color:${p.profit >= 0 ? '#e53935' : '#2979ff'};">
+          $${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
+        </div>
+
+        <div style="margin-top:8px; font-size:14px; color:#555;">
+          ${p.memo}
         </div>
       `;
-    };
 
-    indexBar.innerHTML =
-      row("S&P500", sp) +
-      row("나스닥", nq) +
-      row("나스닥 선물", nf);
-
-  } catch (e) {
-    indexBar.innerHTML = "지수 불러오기 실패";
+      card.appendChild(del);
+      card.appendChild(content);
+      postList.appendChild(card);
+    });
   }
-}
 
-fetchIndices();
-setInterval(fetchIndices, 10000);
+  function addPost() {
+
+    const ticker = document.getElementById("ticker").value;
+    const title = document.getElementById("postTitle").value;
+    const color = document.getElementById("color").value || "#3182f6";
+
+    const rawDate = document.getElementById("date").value;
+    const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
+
+    const buy = parseFloat(document.getElementById("buy").value);
+    const sell = parseFloat(document.getElementById("sell").value);
+    const qty = parseFloat(document.getElementById("qty").value);
+    const memo = document.getElementById("memo").value;
+
+    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
+
+    /* 단가 방식 */
+    const diff = sell - buy;
+    const profit = diff * qty;
+    const totalBuy = buy * qty;
+    const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
+
+    posts.unshift({
+      ticker,
+      title,
+      color,
+      date,
+      profit,
+      percent,
+      memo
+    });
+
+    savePosts();
+    renderPosts();
+
+    modal.style.display = "none";
+
+    document.querySelectorAll("input").forEach(i => {
+      if (i.id === "color") {
+        i.value = "#3182f6";
+      } else {
+        i.value = "";
+      }
+    });
+  }
+
+  renderPosts();
 </script>
 
 </body>
