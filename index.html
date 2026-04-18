@@ -17,7 +17,9 @@ body {
   to { opacity:1; transform:translateY(0); }
 }
 
+/* 카드 */
 .card {
+  position:relative;
   background:#fff;
   border-radius:20px;
   padding:18px;
@@ -31,6 +33,21 @@ body {
   transform:scale(0.98);
 }
 
+/* 프로필 */
+.profile {
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  font-weight:700;
+  margin-right:12px;
+  flex-shrink:0;
+}
+
+/* input */
 .input {
   width:100%;
   box-sizing:border-box;
@@ -46,6 +63,7 @@ textarea.input {
   resize:none;
 }
 
+/* 버튼 */
 .btn {
   padding:14px;
   background:#3182f6;
@@ -59,6 +77,7 @@ textarea.input {
   transform:scale(0.97);
 }
 
+/* 컨테이너 */
 .container {
   max-width:420px;
   margin:0 auto;
@@ -66,6 +85,7 @@ textarea.input {
   padding-bottom:140px;
 }
 
+/* 탭 */
 .tabbar {
   position:fixed;
   bottom:0;
@@ -121,6 +141,7 @@ textarea.input {
 * {
   -webkit-tap-highlight-color: transparent;
 }
+
 </style>
 
 </head>
@@ -188,12 +209,7 @@ let community = JSON.parse(localStorage.getItem("community")) || [];
 
 const modal = document.getElementById("modal");
 
-/* ✔ 모달 닫기 */
-function closeModal() {
-  modal.classList.remove("active");
-}
-
-/* 탭 전환 */
+/* 탭 */
 function switchTab(t) {
 
   tab = t;
@@ -206,11 +222,10 @@ function switchTab(t) {
 
   document.getElementById("title").innerText = t === "record" ? "기록" : "커뮤니티";
 
-  /* ✔ 핵심 추가: 탭 이동 시 모달 자동 종료 */
   closeModal();
 }
 
-/* 모달 열기 */
+/* 모달 */
 function openRecordModal() {
   modal.classList.add("active");
   document.getElementById("recordForm").style.display = "block";
@@ -223,7 +238,11 @@ function openCommunityModal() {
   document.getElementById("communityForm").style.display = "block";
 }
 
-/* 기록 */
+function closeModal() {
+  modal.classList.remove("active");
+}
+
+/* 기록 (복구 완료) */
 function addRecord() {
 
   const ticker = document.getElementById("ticker").value;
@@ -232,9 +251,20 @@ function addRecord() {
   const sell = parseFloat(document.getElementById("sell").value);
   const qty = parseFloat(document.getElementById("qty").value);
 
-  const profit = sell - buy;
+  if (isNaN(buy) || isNaN(sell)) return;
 
-  records.unshift({ ticker, title, buy, sell, qty, profit });
+  const profit = (sell - buy) * qty;
+  const percent = ((sell - buy) / buy) * 100;
+
+  records.unshift({
+    ticker,
+    title,
+    buy,
+    sell,
+    qty,
+    profit,
+    percent
+  });
 
   localStorage.setItem("records", JSON.stringify(records));
 
@@ -260,7 +290,7 @@ function addCommunity() {
   render();
 }
 
-/* 렌더 */
+/* 렌더 (복구 핵심) */
 function render() {
 
   const r = document.getElementById("recordList");
@@ -270,24 +300,45 @@ function render() {
   c.innerHTML = "";
 
   records.forEach(x => {
+
     const div = document.createElement("div");
     div.className = "card";
+
     div.innerHTML = `
-      <div style="font-weight:700">${x.title}</div>
-      <div style="font-size:12px;color:#999">${x.ticker}</div>
-      <div style="margin-top:10px;">$ ${x.profit}</div>
+      <div style="display:flex; align-items:center;">
+        <div class="profile" style="background:#3182f6;">
+          ${x.ticker?.slice(0,1) || "?"}
+        </div>
+
+        <div>
+          <div style="font-weight:700">${x.title}</div>
+          <div style="font-size:12px;color:#999">${x.ticker}</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px; font-size:18px; font-weight:700; color:${x.profit >= 0 ? '#e53935' : '#2979ff'};">
+        $${x.profit.toFixed(2)} (${x.percent.toFixed(1)}%)
+      </div>
+
+      <div style="font-size:12px;color:#999;margin-top:4px;">
+        ${x.qty}주
+      </div>
     `;
+
     r.appendChild(div);
   });
 
   community.forEach(x => {
+
     const div = document.createElement("div");
     div.className = "card";
+
     div.innerHTML = `
       <div style="font-weight:700">${x.title}</div>
       <div style="margin-top:8px; font-size:14px">${x.body}</div>
       <div style="margin-top:10px; font-size:12px; color:#aaa">${x.date}</div>
     `;
+
     c.appendChild(div);
   });
 }
