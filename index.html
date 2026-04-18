@@ -6,23 +6,6 @@
 <title>기록</title>
 </head>
 
-<style>
-  .profit-text {
-    transition: all 0.3s ease;
-    font-weight: 700;
-  }
-
-  .profit-up {
-    color: #e53935;
-    transform: scale(1.03);
-  }
-
-  .profit-down {
-    color: #2979ff;
-    transform: scale(1.03);
-  }
-</style>
-
 <body style="margin:0; font-family:-apple-system, BlinkMacSystemFont, sans-serif; background:#fff;">
 
 <div style="max-width:420px; margin:0 auto; padding:16px;">
@@ -64,35 +47,33 @@
   max-height:80vh;
   overflow:auto;
   box-shadow:0 -4px 20px rgba(0,0,0,0.1);
-
   box-sizing:border-box;
 ">
 
-  <!-- 티커 -->
-  <input id="ticker" placeholder="티커" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="ticker" placeholder="티커"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 제목 -->
-  <input id="postTitle" placeholder="제목" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="postTitle" placeholder="제목"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 색상 -->
-  <input id="color" placeholder="색상" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="color" value="#3182f6" placeholder="색상"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 날짜 -->
-  <input id="date" type="date" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee; min-width:0;">
+  <input id="date" type="date"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee; min-width:0;">
 
-  <!-- 매수 -->
-  <input id="buy" type="number" placeholder="구매 가격" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="buy" type="number" placeholder="구매 금액"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 매도 -->
-  <input id="sell" type="number" placeholder="판매 가격" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="sell" type="number" placeholder="판매 금액"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 수량 -->
-  <input id="qty" type="number" placeholder="수량" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="qty" type="number" placeholder="수량"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 메모 -->
-  <input id="memo" placeholder="메모" style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+  <input id="memo" placeholder="메모"
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <!-- 저장 -->
   <div onclick="addPost()" style="
     padding:14px;
     background:#3182f6;
@@ -127,6 +108,14 @@
     renderPosts();
   }
 
+  /* 숫자 포맷 */
+  function formatNumber(num) {
+    return num.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
   function renderPosts() {
     postList.innerHTML = "";
 
@@ -156,34 +145,12 @@
         </div>
 
         <div style="margin-top:14px; font-size:20px; font-weight:700; color:${color};">
-          $${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
+          $${formatNumber(p.profit)} (${p.percent.toFixed(1)}%)
         </div>
 
         <div style="margin-top:8px; font-size:14px; color:#555;">
           ${p.memo}
-
-        const profitClass = p.profit >= 0 ? "profit-up" : "profit-down";
-
-        const content = document.createElement("div");
-        content.innerHTML = `
-          <div style="display:flex; align-items:center;">
-            <div style="width:44px; height:44px; border-radius:50%; background:${p.color}; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; margin-right:12px;">
-              ${p.ticker}
-            </div>
-            <div>
-              <div style="font-weight:600;">${p.title}</div>
-              <div style="font-size:12px; color:#999;">${p.date}</div>
-            </div>
-          </div>
-
-          <div class="profit-text ${profitClass}" style="margin-top:14px; font-size:20px;">
-            $${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
-          </div>
-
-          <div style="margin-top:8px; font-size:14px; color:#555;">
-            ${p.memo}
-          </div>
-`;
+        </div>
       `;
 
       card.appendChild(del);
@@ -196,28 +163,22 @@
 
     const ticker = document.getElementById("ticker").value;
     const title = document.getElementById("postTitle").value;
-    const color = document.getElementById("color").value || "#2979ff";
+    const color = document.getElementById("color").value || "#3182f6";
+
     const rawDate = document.getElementById("date").value;
     const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
 
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
     const qty = parseFloat(document.getElementById("qty").value);
-
     const memo = document.getElementById("memo").value;
 
     if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
 
-    /* 1. 단가 차이 */
+    /* 단가 방식 */
     const diff = sell - buy;
-
-    /* 2. 총 수익 */
     const profit = diff * qty;
-
-    /* 3. 총 투자금 */
     const totalBuy = buy * qty;
-
-    /* 4. 수익률 */
     const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
 
     const newPost = {
@@ -236,7 +197,14 @@
     renderPosts();
 
     modal.style.display = "none";
-    document.querySelectorAll("input").forEach(i => i.value = "");
+
+    document.querySelectorAll("input").forEach(i => {
+      if (i.id === "color") {
+        i.value = "#3182f6";
+      } else {
+        i.value = "";
+      }
+    });
   }
 
   renderPosts();
