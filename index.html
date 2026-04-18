@@ -17,7 +17,6 @@ body {
   to { opacity:1; transform:translateY(0); }
 }
 
-/* 카드 */
 .card {
   background:#fff;
   border-radius:20px;
@@ -32,7 +31,6 @@ body {
   transform:scale(0.98);
 }
 
-/* input */
 .input {
   width:100%;
   box-sizing:border-box;
@@ -48,7 +46,6 @@ textarea.input {
   resize:none;
 }
 
-/* 버튼 */
 .btn {
   padding:14px;
   background:#3182f6;
@@ -62,7 +59,6 @@ textarea.input {
   transform:scale(0.97);
 }
 
-/* 컨테이너 */
 .container {
   max-width:420px;
   margin:0 auto;
@@ -70,7 +66,6 @@ textarea.input {
   padding-bottom:140px;
 }
 
-/* 탭 */
 .tabbar {
   position:fixed;
   bottom:0;
@@ -97,7 +92,7 @@ textarea.input {
   font-weight:700;
 }
 
-/* ✔ 모달 (핵심 변경 부분) */
+/* 모달 */
 #modal {
   position:fixed;
   bottom:60px;
@@ -111,21 +106,21 @@ textarea.input {
   box-shadow:0 -4px 20px rgba(0,0,0,0.1);
   z-index:20;
 
-  /* 기본 상태 (숨김) */
   transform:translateY(100%);
   opacity:0;
   pointer-events:none;
-
   transition:all 0.28s ease;
 }
 
-/* ✔ 활성 상태 */
 #modal.active {
   transform:translateY(0);
   opacity:1;
   pointer-events:auto;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 </style>
 
 </head>
@@ -150,7 +145,7 @@ textarea.input {
 
 </div>
 
-<!-- ✔ 모달 -->
+<!-- 모달 -->
 <div id="modal">
 
   <div id="recordForm">
@@ -193,7 +188,12 @@ let community = JSON.parse(localStorage.getItem("community")) || [];
 
 const modal = document.getElementById("modal");
 
-/* 탭 */
+/* ✔ 모달 닫기 */
+function closeModal() {
+  modal.classList.remove("active");
+}
+
+/* 탭 전환 */
 function switchTab(t) {
 
   tab = t;
@@ -205,9 +205,12 @@ function switchTab(t) {
   document.getElementById("tab_community").classList.toggle("active", t==="community");
 
   document.getElementById("title").innerText = t === "record" ? "기록" : "커뮤니티";
+
+  /* ✔ 핵심 추가: 탭 이동 시 모달 자동 종료 */
+  closeModal();
 }
 
-/* ✔ 모달 열기 (슬라이드 업 트리거) */
+/* 모달 열기 */
 function openRecordModal() {
   modal.classList.add("active");
   document.getElementById("recordForm").style.display = "block";
@@ -218,11 +221,6 @@ function openCommunityModal() {
   modal.classList.add("active");
   document.getElementById("recordForm").style.display = "none";
   document.getElementById("communityForm").style.display = "block";
-}
-
-/* ✔ 모달 닫기 (배경 클릭 없이 자동 닫기 구조 유지) */
-function closeModal() {
-  modal.classList.remove("active");
 }
 
 /* 기록 */
