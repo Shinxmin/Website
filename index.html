@@ -241,23 +241,27 @@
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
     const qty = parseFloat(document.getElementById("qty").value);
-    const fee = parseFloat(document.getElementById("fee").value) || 0;
     const memo = document.getElementById("memo").value;
 
-    if (!ticker || !buy || !sell || !qty) return;
+    if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;;
 
-    /* 계산 */
+    /* 1. 단가 차이 */
+    const diff = sell - buy;
+
+    /* 2. 총 수익 */
+    const profit = diff * qty;
+
+    /* 3. 총 매수금액 */
     const totalBuy = buy * qty;
-    const totalSell = sell * qty;
-    const profit = totalSell - totalBuy - fee;
-    const percent = (profit / totalBuy) * 100;
+
+    /* 4. 수익률 */
+    const percent = totalBuy !== 0 ? (profit / totalBuy) * 100 : 0;
 
     const newPost = {
       ticker,
       title,
       color,
       date,
-      profit,
       percent,
       memo
     };
