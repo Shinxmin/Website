@@ -10,8 +10,10 @@
 
 <div style="max-width:420px; margin:0 auto; padding:16px;">
 
+  <!-- 제목 -->
   <div style="font-size:30px; font-weight:800; margin-bottom:12px;">기록</div>
 
+  <!-- 작성 버튼 -->
   <div onclick="openModal()" style="
     width:100%;
     box-sizing:border-box;
@@ -27,10 +29,12 @@
     작성
   </div>
 
+  <!-- 게시물 리스트 -->
   <div id="postList"></div>
 
 </div>
 
+<!-- 입력 모달 -->
 <div id="modal" style="
   position:fixed;
   bottom:0;
@@ -52,11 +56,11 @@
   <input id="postTitle" placeholder="제목"
     style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
-  <input id="color" value="#000000"
+  <input id="color" value="#3182f6" placeholder="색상"
     style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
   <input id="date" type="date"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee; appearance:none; -webkit-appearance:none;">
 
   <input id="buy" type="number" placeholder="구매 가격"
     style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
@@ -147,7 +151,7 @@
         </div>
 
         <div style="margin-top:8px; font-size:14px; color:#555;">
-          ${p.memo || ""}
+          ${p.memo}
         </div>
       `;
 
@@ -170,7 +174,8 @@
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
     const qty = parseFloat(document.getElementById("qty").value);
-
+    const memo = document.getElementById("memo").value;
+    
     if (isNaN(buy) || isNaN(sell) || isNaN(qty)) return;
 
     /* 1. 단가 차이 */
@@ -201,8 +206,11 @@
     modal.style.display = "none";
 
     document.querySelectorAll("input").forEach(i => {
-      if (i.id === "color") i.value = "#3182f6";
-      else i.value = "";
+      if (i.id === "color") {
+        i.value = "#3182f6";
+      } else {
+        i.value = "";
+      }
     });
   }
 
