@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock Record</title>
+<title>기록</title>
 
 <style>
   body {
@@ -18,20 +18,23 @@
     padding: 16px;
   }
 
+  /* 상단 제목 */
   .header {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 16px;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 12px;
   }
 
-  .record-btn {
+  /* 작성 버튼 */
+  .write-btn {
+    width: 100%;
     padding: 14px;
-    background: #2979ff;
+    border-radius: 16px;
+    background: #3182f6;
     color: #fff;
-    border-radius: 14px;
     text-align: center;
+    font-weight: 600;
     margin-bottom: 16px;
-    cursor: pointer;
   }
 
   .card {
@@ -59,6 +62,10 @@
     margin-right: 12px;
   }
 
+  .title {
+    font-weight: 600;
+  }
+
   .date {
     font-size: 12px;
     color: #999;
@@ -76,32 +83,36 @@
     color: #555;
   }
 
+  /* 모달 */
   .modal {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
     background: #fff;
-    padding: 20px;
     border-radius: 20px 20px 0 0;
+    padding: 20px;
     display: none;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    max-height: 80vh;
+    overflow-y: auto;
   }
 
   input {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border-radius: 10px;
+    border-radius: 12px;
     border: 1px solid #eee;
   }
 
-  .submit {
-    padding: 12px;
-    background: #2979ff;
-    color: white;
-    border-radius: 12px;
+  .save-btn {
+    padding: 14px;
+    background: #3182f6;
+    color: #fff;
+    border-radius: 14px;
     text-align: center;
-    cursor: pointer;
+    font-weight: 600;
   }
 
 </style>
@@ -111,11 +122,11 @@
 
 <div class="container">
 
-  <!-- 상단 제목 -->
-  <div class="header">홈</div>
+  <!-- [상단 제목] -->
+  <div class="header">기록</div>
 
-  <!-- 기록 버튼 -->
-  <div class="record-btn" onclick="openModal()">+ 기록 추가</div>
+  <!-- [작성 버튼] -->
+  <div class="write-btn" onclick="openModal()">작성</div>
 
   <!-- 게시물 리스트 -->
   <div id="postList"></div>
@@ -125,19 +136,35 @@
 <!-- 입력 모달 -->
 <div class="modal" id="modal">
 
-  <!-- 티커 -->
-  <input id="ticker" placeholder="티커 (예: QLD)">
+  <!-- [1] 티커 -->
+  <input id="ticker" placeholder="티커">
 
-  <!-- 매수 -->
+  <!-- [2] 게시글 제목 -->
+  <input id="postTitle" placeholder="게시글 제목">
+
+  <!-- [3] 프로필 색상 (hex 입력) -->
+  <input id="color" placeholder="프로필 색상 (예: #2979ff)">
+
+  <!-- [4] 매매 일시 -->
+  <input id="date" type="datetime-local">
+
+  <!-- [5] 매수 금액 -->
   <input id="buy" type="number" placeholder="매수 금액">
 
-  <!-- 매도 -->
+  <!-- [6] 매도 금액 -->
   <input id="sell" type="number" placeholder="매도 금액">
 
-  <!-- 메모 -->
+  <!-- [7] 수량 -->
+  <input id="qty" type="number" placeholder="수량">
+
+  <!-- [8] 수수료 -->
+  <input id="fee" type="number" placeholder="수수료">
+
+  <!-- [9] 메모 -->
   <input id="memo" placeholder="메모">
 
-  <div class="submit" onclick="addPost()">저장</div>
+  <!-- [10] 저장 버튼 -->
+  <div class="save-btn" onclick="addPost()">저장</div>
 
 </div>
 
@@ -145,7 +172,6 @@
   const modal = document.getElementById("modal");
   const postList = document.getElementById("postList");
 
-  /* 저장된 데이터 불러오기 */
   let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
   function openModal() {
@@ -167,9 +193,9 @@
 
       card.innerHTML = `
         <div class="profile">
-          <div class="avatar" style="background:#2979ff;">${p.ticker}</div>
+          <div class="avatar" style="background:${p.color}">${p.ticker}</div>
           <div>
-            <div><b>${p.ticker} 매매 기록</b></div>
+            <div class="title">${p.title}</div>
             <div class="date">${p.date}</div>
           </div>
         </div>
@@ -186,22 +212,33 @@
   }
 
   function addPost() {
+
     const ticker = document.getElementById("ticker").value;
+    const title = document.getElementById("postTitle").value;
+    const color = document.getElementById("color").value || "#2979ff";
+    const date = document.getElementById("date").value;
     const buy = parseFloat(document.getElementById("buy").value);
     const sell = parseFloat(document.getElementById("sell").value);
+    const qty = parseFloat(document.getElementById("qty").value);
+    const fee = parseFloat(document.getElementById("fee").value) || 0;
     const memo = document.getElementById("memo").value;
 
-    if (!ticker || !buy || !sell) return;
+    if (!ticker || !buy || !sell || !qty) return;
 
-    const profit = sell - buy;
-    const percent = (profit / buy) * 100;
+    /* 핵심 계산 */
+    const totalBuy = buy * qty;
+    const totalSell = sell * qty;
+    const profit = totalSell - totalBuy - fee;
+    const percent = (profit / totalBuy) * 100;
 
     const newPost = {
       ticker,
+      title,
+      color,
+      date,
       profit,
       percent,
-      memo,
-      date: new Date().toISOString().slice(0,10)
+      memo
     };
 
     posts.unshift(newPost);
@@ -213,7 +250,6 @@
     document.querySelectorAll("input").forEach(i => i.value = "");
   }
 
-  /* 페이지 로드시 자동 렌더링 */
   renderPosts();
 </script>
 
