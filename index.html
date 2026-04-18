@@ -4,6 +4,53 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>대시보드</title>
+
+<style>
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(8px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* 기본 카드 */
+.card {
+  position: relative;
+  background: #fff;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+  animation: cardIn 0.25s ease;
+  transition: all 0.2s ease;
+}
+
+/* ✔ 수익 카드 glow (토스 스타일) */
+.card-profit {
+  box-shadow:
+    0 0 0 1px rgba(229,57,53,0.35),
+    0 0 14px rgba(229,57,53,0.25),
+    0 6px 18px rgba(0,0,0,0.04);
+}
+
+/* hover 효과 */
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* 삭제 버튼 */
+.del-btn {
+  position:absolute;
+  top:16px;
+  right:16px;
+  font-size:12px;
+  color:#aaa;
+  cursor:pointer;
+  transition:0.2s;
+}
+.del-btn:hover {
+  color:#333;
+}
+</style>
+
 </head>
 
 <body style="margin:0; font-family:-apple-system, BlinkMacSystemFont, sans-serif; background:#fff;">
@@ -79,7 +126,7 @@
     style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
   <input id="date" type="date"
-    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee; appearance:none; -webkit-appearance:none;">
+    style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
 
   <input id="buy" type="number" placeholder="구매 가격"
     style="width:100%; box-sizing:border-box; padding:10px; margin-bottom:10px; border-radius:12px; border:1px solid #eee;">
@@ -108,137 +155,143 @@
 </div>
 
 <script>
-  const modal = document.getElementById("modal");
-  const postList = document.getElementById("postList");
 
-  let posts = JSON.parse(localStorage.getItem("posts")) || [];
+const modal = document.getElementById("modal");
+const postList = document.getElementById("postList");
 
-  function openModal() {
-    modal.style.display = "block";
-  }
+let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
-  function savePosts() {
-    localStorage.setItem("posts", JSON.stringify(posts));
-  }
+function openModal() {
+  modal.style.display = "block";
+}
 
-  function deletePost(index) {
-    posts.splice(index, 1);
-    savePosts();
-    renderPosts();
-  }
+function savePosts() {
+  localStorage.setItem("posts", JSON.stringify(posts));
+}
 
-  // ✔ 누적 수익 계산
-  function renderTotalProfit() {
-    const total = posts.reduce((sum, p) => sum + (p.profit || 0), 0);
-
-    document.getElementById("totalProfitText").innerText =
-      `$ ${total.toFixed(2)}`;
-  }
-
-  function renderPosts() {
-    postList.innerHTML = "";
-
-    posts.forEach((p, index) => {
-
-      const card = document.createElement("div");
-      card.style = "position:relative; background:#fff; border-radius:20px; padding:18px; box-shadow:0 6px 18px rgba(0,0,0,0.04); margin-bottom:14px;";
-
-      const del = document.createElement("div");
-      del.innerText = "삭제";
-      del.style = "position:absolute; top:16px; right:16px; font-size:12px; color:#aaa; cursor:pointer;";
-      del.onclick = () => deletePost(index);
-
-      const content = document.createElement("div");
-
-      content.innerHTML = `
-        <div style="display:flex; align-items:center;">
-          <div style="
-            width:44px;
-            height:44px;
-            border-radius:50%;
-            background:${p.color};
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:#fff;
-            font-weight:700;
-            margin-right:12px;
-          ">
-            ${p.ticker}
-          </div>
-
-          <div>
-            <div style="font-weight:600;">${p.title}</div>
-            <div style="font-size:12px; color:#999;">${p.date}</div>
-          </div>
-        </div>
-
-        <div style="margin-top:14px; font-size:20px; font-weight:700; color:${p.profit >= 0 ? '#e53935' : '#2979ff'};">
-          $${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
-        </div>
-
-        <div style="margin-top:4px; font-size:12px; color:#999;">
-          ${p.qty}주
-        </div>
-
-        <div style="margin-top:8px; font-size:14px; color:#555;">
-          ${p.memo}
-        </div>
-      `;
-
-      card.appendChild(del);
-      card.appendChild(content);
-      postList.appendChild(card);
-    });
-
-    renderTotalProfit(); // ✔ 항상 최신 합산
-  }
-
-  function addPost() {
-
-    const ticker = document.getElementById("ticker").value;
-    const title = document.getElementById("postTitle").value;
-    const color = document.getElementById("color").value || "#000000";
-
-    const rawDate = document.getElementById("date").value;
-    const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
-
-    const buy = parseFloat(document.getElementById("buy").value);
-    const sell = parseFloat(document.getElementById("sell").value);
-    const qty = parseFloat(document.getElementById("qty").value);
-    const memo = document.getElementById("memo").value;
-
-    if (isNaN(buy) || isNaN(sell)) return;
-
-    const profit = sell - buy;
-    const percent = buy !== 0 ? (profit / buy) * 100 : 0;
-
-    posts.unshift({
-      ticker,
-      title,
-      color,
-      date,
-      profit,
-      percent,
-      memo,
-      qty
-    });
-
-    savePosts();
-    renderPosts();
-
-    modal.style.display = "none";
-
-    document.querySelectorAll("input").forEach(i => {
-      if (i.id === "color") {
-        i.value = "#000000";
-      } else {
-        i.value = "";
-      }
-    });
-  }
-
+function deletePost(index) {
+  posts.splice(index, 1);
+  savePosts();
   renderPosts();
+}
+
+/* 누적 수익 */
+function renderTotalProfit() {
+  const total = posts.reduce((sum, p) => sum + (p.profit || 0), 0);
+
+  document.getElementById("totalProfitText").innerText =
+    `$ ${total.toFixed(2)}`;
+}
+
+/* 리스트 */
+function renderPosts() {
+
+  postList.innerHTML = "";
+
+  posts.forEach((p, index) => {
+
+    const card = document.createElement("div");
+    card.classList.add("card");
+
+    /* ✔ 수익이면 glow */
+    if (p.profit > 0) {
+      card.classList.add("card-profit");
+    }
+
+    const del = document.createElement("div");
+    del.innerText = "삭제";
+    del.classList.add("del-btn");
+    del.onclick = () => deletePost(index);
+
+    const content = document.createElement("div");
+
+    content.innerHTML = `
+      <div style="display:flex; align-items:center;">
+        <div style="
+          width:44px;
+          height:44px;
+          border-radius:50%;
+          background:${p.color};
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          color:#fff;
+          font-weight:700;
+          margin-right:12px;
+        ">
+          ${p.ticker}
+        </div>
+
+        <div>
+          <div style="font-weight:600;">${p.title}</div>
+          <div style="font-size:12px; color:#999;">${p.date}</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px; font-size:20px; font-weight:700; color:${p.profit >= 0 ? '#e53935' : '#2979ff'};">
+        $${p.profit.toFixed(2)} (${p.percent.toFixed(1)}%)
+      </div>
+
+      <div style="margin-top:4px; font-size:12px; color:#999;">
+        ${p.qty}주
+      </div>
+
+      <div style="margin-top:8px; font-size:14px; color:#555;">
+        ${p.memo}
+      </div>
+    `;
+
+    card.appendChild(del);
+    card.appendChild(content);
+    postList.appendChild(card);
+  });
+
+  renderTotalProfit();
+}
+
+/* 추가 */
+function addPost() {
+
+  const ticker = document.getElementById("ticker").value;
+  const title = document.getElementById("postTitle").value;
+  const color = document.getElementById("color").value || "#000000";
+
+  const rawDate = document.getElementById("date").value;
+  const date = rawDate ? rawDate.replaceAll("-", ".") : "날짜 없음";
+
+  const buy = parseFloat(document.getElementById("buy").value);
+  const sell = parseFloat(document.getElementById("sell").value);
+  const qty = parseFloat(document.getElementById("qty").value);
+  const memo = document.getElementById("memo").value;
+
+  if (isNaN(buy) || isNaN(sell)) return;
+
+  const profit = sell - buy;
+  const percent = buy !== 0 ? (profit / buy) * 100 : 0;
+
+  posts.unshift({
+    ticker,
+    title,
+    color,
+    date,
+    profit,
+    percent,
+    memo,
+    qty
+  });
+
+  savePosts();
+  renderPosts();
+
+  modal.style.display = "none";
+
+  document.querySelectorAll("input").forEach(i => {
+    i.value = "";
+  });
+}
+
+renderPosts();
+
 </script>
 
 </body>
