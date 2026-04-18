@@ -3,13 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock Post</title>
+<title>Stock Record</title>
 
 <style>
-  * {
-    box-sizing: border-box;
-  }
-
   body {
     margin: 0;
     background: #ffffff;
@@ -23,6 +19,12 @@
     padding: 16px;
   }
 
+  .header {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
   .card {
     background: #fff;
     border-radius: 20px;
@@ -30,7 +32,6 @@
     box-shadow: 0 6px 18px rgba(0,0,0,0.04);
   }
 
-  /* 프로필 */
   .profile {
     display: flex;
     align-items: center;
@@ -40,61 +41,36 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: #2979ff;
-    color: #fff;
-    font-weight: 700;
-    font-size: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #fff;
+    font-weight: 700;
     margin-right: 12px;
   }
 
-  .name {
+  .title {
+    font-size: 16px;
     font-weight: 600;
-    font-size: 15px;
   }
 
-  .sub {
+  .date {
     font-size: 12px;
-    color: #888;
+    color: #999;
+    margin-top: 2px;
   }
 
-  /* 수익 강조 */
   .profit {
-    margin-top: 18px;
-    font-size: 22px;
+    margin-top: 16px;
+    font-size: 20px;
     font-weight: 700;
-    color: #e53935;
   }
 
-  /* 설명 */
-  .content {
+  .memo {
     margin-top: 10px;
     font-size: 14px;
     color: #555;
     line-height: 1.5;
-  }
-
-  /* 버튼 */
-  .actions {
-    display: flex;
-    margin-top: 18px;
-  }
-
-  .btn {
-    flex: 1;
-    padding: 12px 0;
-    text-align: center;
-    border-radius: 12px;
-    background: #f4f6f8;
-    margin-right: 8px;
-    font-size: 14px;
-    color: #555;
-  }
-
-  .btn:last-child {
-    margin-right: 0;
   }
 
 </style>
@@ -104,28 +80,35 @@
 
 <div class="container">
 
+  <!-- 상단 페이지 제목 (여기 수정) -->
+  <div class="header">홈</div>
+
   <div class="card">
-    
+
     <div class="profile">
-      <div class="avatar">QLD</div>
+
+      <!-- [1] 프로필 설정: 티커명과 배경색 수정 -->
+      <!-- background 값 변경 / 텍스트 변경 -->
+      <div class="avatar" style="background:#2979ff;">QLD</div>
+
       <div>
-        <div class="name">QLD 투자 기록</div>
-        <div class="sub">방금 전 · 수익 실현</div>
+        <!-- [2] 게시물 제목 수정 -->
+        <div class="title">QLD</div>
+
+        <!-- [3] 매매 날짜 수정 -->
+        <div class="date">2026년 04월18일</div>
       </div>
+
     </div>
 
-    <div class="profit">
-      + $167.72 (14.8%)
+    <!-- [4] 수익 금액 및 수익률 수정 (색상도 여기서 변경 가능) -->
+    <div class="profit" style="color:#e53935;">
+    $167.72 (14.8%)
     </div>
 
-    <div class="content">
-      목표 수익률 도달로 일부 물량을 정리했다. 계획대로 진행된 트레이드.
-    </div>
-
-    <div class="actions">
-      <div class="btn">좋아요</div>
-      <div class="btn">댓글</div>
-      <div class="btn">공유</div>
+    <!-- [5] 추가 메모 작성 -->
+    <div class="memo">
+    나스닥 전고점 진입 및 수익실현 욕구로 매도
     </div>
 
   </div>
