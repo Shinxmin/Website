@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tab UI</title>
+
+<style>
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#f5f6f8;
+}
+
+/* 컨테이너 */
+.app{
+  max-width:420px;
+  margin:0 auto;
+  min-height:100vh;
+  position:relative;
+  background:#f5f6f8;
+}
+
+/* 탭 콘텐츠 */
+.tab{
+  display:none;
+  padding:20px;
+  padding-bottom:80px;
+}
+
+.tab.active{
+  display:block;
+}
+
+/* 카드 (토스 스타일 핵심) */
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* 타이틀 */
+.title{
+  font-size:18px;
+  font-weight:600;
+  margin-bottom:8px;
+}
+
+/* 서브텍스트 */
+.sub{
+  font-size:14px;
+  color:#666;
+}
+
+/* 하단 네비게이션 */
+.nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:#fff;
+  border-top:1px solid #eee;
+}
+
+.nav-inner{
+  max-width:420px;
+  margin:0 auto;
+  display:flex;
+}
+
+.nav button{
+  flex:1;
+  padding:12px 0;
+  border:none;
+  background:none;
+  font-size:14px;
+  color:#999;
+}
+
+.nav button.active{
+  color:#3182f6;
+  font-weight:600;
+}
+
+/* 부드러운 느낌 */
+button{
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- A 탭 -->
+  <div id="tabA" class="tab active">
+    <div class="card">
+      <div class="title">A 탭</div>
+      <div class="sub">여기는 첫 번째 화면</div>
+    </div>
+
+    <div class="card">
+      <div class="title">데이터 카드</div>
+      <div class="sub">토스 느낌 리스트</div>
+    </div>
+  </div>
+
+  <!-- B 탭 -->
+  <div id="tabB" class="tab">
+    <div class="card">
+      <div class="title">B 탭</div>
+      <div class="sub">두 번째 화면</div>
+    </div>
+  </div>
+
+  <!-- C 탭 -->
+  <div id="tabC" class="tab">
+    <div class="card">
+      <div class="title">C 탭</div>
+      <div class="sub">세 번째 화면</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 하단 네비 -->
+<div class="nav">
+  <div class="nav-inner">
+    <button class="active" onclick="switchTab('A', this)">A</button>
+    <button onclick="switchTab('B', this)">B</button>
+    <button onclick="switchTab('C', this)">C</button>
+  </div>
+</div>
+
+<script>
+function switchTab(tab, el){
+
+  // 탭 숨기기
+  document.querySelectorAll('.tab').forEach(t=>{
+    t.classList.remove('active');
+  });
+
+  // 버튼 상태 초기화
+  document.querySelectorAll('.nav button').forEach(b=>{
+    b.classList.remove('active');
+  });
+
+  // 선택 탭 표시
+  document.getElementById('tab'+tab).classList.add('active');
+
+  // 버튼 활성화
+  el.classList.add('active');
+}
+</script>
+
+</body>
+</html>
