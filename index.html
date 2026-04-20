@@ -72,7 +72,7 @@ button, div[onclick] {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ✔ 추가: 탭바 */
+/* ✔ 탭바 */
 .tabbar {
   position:fixed;
   bottom:0;
@@ -82,6 +82,7 @@ button, div[onclick] {
   background:#fff;
   border-top:1px solid #eee;
   display:flex;
+  z-index:10; /* 낮게 */
 }
 
 .tab {
@@ -98,9 +99,13 @@ button, div[onclick] {
   font-weight:700;
 }
 
-/* 하단 여백 확보 */
 .wrapper {
   padding-bottom:80px;
+}
+
+/* ✔ 핵심: 모달을 위로 */
+#modal {
+  z-index:1000;
 }
 </style>
 
@@ -110,7 +115,6 @@ button, div[onclick] {
 
 <div class="wrapper">
 
-<!-- ✔ 기록 화면 -->
 <div id="recordView">
 
 <div style="max-width:420px; margin:0 auto; padding:16px;">
@@ -153,7 +157,6 @@ button, div[onclick] {
 </div>
 </div>
 
-<!-- ✔ 커뮤니티 (UI만) -->
 <div id="communityView" style="display:none;">
   <div style="max-width:420px; margin:0 auto; padding:16px;">
     <div style="font-size:30px; font-weight:800;">커뮤니티</div>
@@ -162,7 +165,7 @@ button, div[onclick] {
 
 </div>
 
-<!-- 모달 (그대로 유지) -->
+<!-- 모달 -->
 <div id="modal" style="
   position:fixed;
   bottom:0;
@@ -177,7 +180,6 @@ button, div[onclick] {
   box-shadow:0 -4px 20px rgba(0,0,0,0.1);
 ">
 
-  <!-- (기존 내용 그대로 유지) -->
   <input id="ticker" placeholder="티커" class="modal-input">
   <input id="postTitle" placeholder="제목" class="modal-input">
   <input id="color" placeholder="색상" class="modal-input">
@@ -192,7 +194,7 @@ button, div[onclick] {
 
 </div>
 
-<!-- ✔ 하단 탭 -->
+<!-- 탭 -->
 <div class="tabbar">
   <div class="tab active" onclick="switchTab('record')" id="tab_record">기록</div>
   <div class="tab" onclick="switchTab('community')" id="tab_community">커뮤니티</div>
@@ -200,7 +202,7 @@ button, div[onclick] {
 
 <script>
 
-/* ✔ 기존 코드 그대로 유지 */
+/* 기존 코드 그대로 */
 const modal = document.getElementById("modal");
 const postList = document.getElementById("postList");
 const totalEl = document.getElementById("totalProfitText");
@@ -215,7 +217,6 @@ function closeModal() {
   modal.style.display = "none";
 }
 
-/* ✔ 추가: 탭 전환 */
 function switchTab(tab) {
 
   document.getElementById("recordView").style.display = tab === "record" ? "block" : "none";
@@ -227,7 +228,7 @@ function switchTab(tab) {
   closeModal();
 }
 
-/* 이하 기존 로직 그대로 */
+/* 이하 동일 */
 function savePosts() {
   localStorage.setItem("posts", JSON.stringify(posts));
 }
