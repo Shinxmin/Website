@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>기록</title>
 
-  
 <style>
 @keyframes cardIn {
   from { opacity:0; transform:translateY(8px); }
@@ -31,7 +30,7 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ✔ press 효과 (hover 대신) */
+/* press 효과 */
 .card:active {
   transform: scale(0.98);
 }
@@ -56,7 +55,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* ✔ press 효과 */
 .del-btn:active {
   transform: scale(0.92);
   color:#333;
@@ -149,7 +147,6 @@ button, div[onclick] {
   margin-bottom:10px;
   border-radius:12px;
   border:1px solid #eee;
-
   appearance:none;
   -webkit-appearance:none;
 ">
@@ -176,6 +173,26 @@ button, div[onclick] {
     저장
   </div>
 
+  <!-- ✔ 추가된 취소 버튼 -->
+  <div onclick="closeModal()" style="
+    margin-top:8px;
+    padding:14px;
+    background:#f1f3f5;
+    color:#555;
+    border-radius:14px;
+    text-align:center;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.12s;
+  "
+  onmousedown="this.style.transform='scale(0.97)'"
+  onmouseup="this.style.transform='scale(1)'"
+  ontouchstart="this.style.transform='scale(0.97)'"
+  ontouchend="this.style.transform='scale(1)'"
+  >
+    취소
+  </div>
+
 </div>
 
 <script>
@@ -188,6 +205,11 @@ let posts = JSON.parse(localStorage.getItem("posts")) || [];
 
 function openModal() {
   modal.style.display = "block";
+}
+
+/* ✔ 추가된 함수 */
+function closeModal() {
+  modal.style.display = "none";
 }
 
 function savePosts() {
