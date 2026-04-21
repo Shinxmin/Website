@@ -6,4 +6,8 @@ function changeTab(index){
 
   tabs.forEach(t => t.classList.remove("active"));
   tabs[index].classList.add("active");
+
+  screens.forEach(s => s.classList.remove("active"));
+  screens[index].classList.add("active");
+
 }
