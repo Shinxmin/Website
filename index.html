@@ -3,38 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App</title>
+  <title>자산관리</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- 차트 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-  <!-- 화면 영역 -->
-  <div class="screen active" id="screenA">
-    <h1>홈</h1>
+
+  <h2>자산 입력</h2>
+
+  <div class="form">
+    <input type="number" id="income" placeholder="입출금">
+    <input type="number" id="saving" placeholder="예/적금">
+    <input type="number" id="invest" placeholder="투자">
+    <input type="number" id="cash" placeholder="현금">
+
+    <button onclick="saveData()">저장</button>
   </div>
 
-  <div class="screen" id="screenB">
-    <h1>B 화면</h1>
-  </div>
-
-  <div class="screen" id="screenC">
-    <h1>C 화면</h1>
-  </div>
-
-  <!-- 하단 네비게이션 -->
-  <div class="nav">
-    <div class="indicator"></div>
-    <div class="tab active" onclick="changeTab('A')">A</div>
-    <div class="tab" onclick="changeTab('B')">B</div>
-    <div class="tab" onclick="changeTab('C')">C</div>
-  </div>
+  <canvas id="chart"></canvas>
 
   <script src="script.js"></script>
-
-
-
-  
 </body>
 </html>
