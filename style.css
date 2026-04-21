@@ -11,12 +11,28 @@
   box-shadow:0 6px 20px rgba(0,0,0,0.08);
 
   display:flex;
-  overflow:hidden; /* 라운딩 유지 */
+  overflow:hidden;
+
+  position:relative; /* indicator 기준 */
 }
 
-/* 3등분 핵심 */
+/* ✅ 슬라이딩 인디케이터 추가 */
+.indicator{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:33.3333%; /* 3분할 */
+
+  background:#f2f3f5;
+  border-radius:30px;
+
+  transition:transform 0.3s ease;
+  z-index:0;
+}
+
+/* 탭 */
 .tab{
-  flex:1; /* 자동 3분할 */
+  flex:1;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -24,11 +40,12 @@
   cursor:pointer;
   color:#888;
   font-weight:500;
+
+  z-index:1; /* 인디케이터 위로 */
 }
 
-/* 선택 상태 */
+/* ✅ active에서는 배경 제거 */
 .tab.active{
   color:#000;
   font-weight:700;
-  background:#f2f3f5; /* 선택된 영역 표시 */
 }
