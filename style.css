@@ -1,1 +1,22 @@
+body{
+  margin:0;
+  background:#f5f5f5;
+}
 
+.nav{
+  position:fixed;
+
+  bottom:20px;   /* 하단에서 20px */
+  left:20px;
+  right:20px;    /* 좌우 여백으로 가운데 정렬 효과 */
+
+  height:60px;   /* 원하는 높이 */
+  background:#fff;
+
+  border-radius:20px; /* 4면 라운딩 */
+  box-shadow:0 6px 20px rgba(0,0,0,0.08);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
