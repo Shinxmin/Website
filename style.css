@@ -49,3 +49,15 @@
   color:#000;
   font-weight:700;
 }
+
+
+/* 모든 화면 기본 숨김 */
+.screen{
+  display:none;
+  padding:40px 20px;
+}
+
+/* 활성 화면만 표시 */
+.screen.active{
+  display:block;
+}
