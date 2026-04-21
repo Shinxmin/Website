@@ -1,63 +1,31 @@
-.nav{
-  position:fixed;
-  bottom:30px;
-  left:30px;
-  right:30px;
-
-  height:60px;
-  background:#fff;
-
-  border-radius:40px;
-  box-shadow:0 6px 20px rgba(0,0,0,0.08);
-
-  display:flex;
-  overflow:hidden;
-
-  position:relative; /* indicator 기준 */
+body{
+  margin:0;
+  padding:20px;
+  font-family:sans-serif;
+  background:#f5f5f5;
 }
 
-/* ✅ 슬라이딩 인디케이터 추가 */
-.indicator{
-  position:absolute;
-  top:0;
-  bottom:0;
-  width:33.3333%; /* 3분할 */
-
-  background:#f2f3f5;
-  border-radius:30px;
-
-  transition:transform 0.3s ease;
-  z-index:0;
+.form{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-bottom:30px;
 }
 
-/* 탭 */
-.tab{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+input{
+  padding:10px;
+  font-size:16px;
+}
 
+button{
+  padding:12px;
+  background:#3182f6;
+  color:#fff;
+  border:none;
+  border-radius:8px;
   cursor:pointer;
-  color:#888;
-  font-weight:500;
-
-  z-index:1; /* 인디케이터 위로 */
 }
 
-/* ✅ active에서는 배경 제거 */
-.tab.active{
-  color:#000;
-  font-weight:700;
-}
-
-
-/* 모든 화면 기본 숨김 */
-.screen{
-  display:none;
-  padding:40px 20px;
-}
-
-/* 활성 화면만 표시 */
-.screen.active{
-  display:block;
+canvas{
+  max-width:400px;
 }
